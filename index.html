@@ -1,1 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>برنامج ختم القرآن</title>
 
+<style>
+body{
+    font-family: system-ui;
+    background:#0b1220;
+    color:white;
+    margin:0;
+    padding:20px;
+    text-align:center;
+}
+
+.card{
+    background:#121b31;
+    padding:20px;
+    border-radius:15px;
+    max-width:500px;
+    margin:auto;
+}
+
+h1{
+    margin-bottom:10px;
+}
+
+.info{
+    margin:10px 0;
+    font-size:18px;
+}
+
+.time{
+    font-size:20px;
+    margin-top:5px;
+    color:#4da6ff;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h1>📖 برنامج ختم القرآن</h1>
+
+    <div class="info">
+        📅 التاريخ: <span id="date"></span>
+    </div>
+
+    <div class="info">
+        🕒 الوقت: <span id="time"></span>
+    </div>
+
+    <div class="info">
+        🌙 اليوم من رمضان: <span id="ramadanDay"></span>
+    </div>
+</div>
+
+<script>
+function updateDateTime() {
+    const now = new Date();
+
+    // عرض التاريخ الميلادي
+    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById("date").innerText =
+        now.toLocaleDateString('ar-SA', dateOptions);
+
+    // عرض الوقت
+    document.getElementById("time").innerText =
+        now.toLocaleTimeString('ar-SA');
+}
+
+// حساب يوم رمضان
+function calculateRamadanDay() {
+    // عدل التاريخ هنا حسب بداية رمضان هذه السنة
+    const ramadanStart = new Date("2025-03-01"); 
+    const today = new Date();
+
+    const diffTime = today - ramadanStart;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+    if (diffDays > 0 && diffDays <= 30) {
+        document.getElementById("ramadanDay").innerText = diffDays;
+    } else {
+        document.getElementById("ramadanDay").innerText = "ليس رمضان حالياً";
+    }
+}
+
+updateDateTime();
+calculateRamadanDay();
+setInterval(updateDateTime, 1000);
+</script>
+
+</body>
+</html>
