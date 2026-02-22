@@ -24,10 +24,7 @@ body{
   box-shadow:0 0 40px rgba(0,0,0,.4);
 }
 
-h1{
-  font-size:32px;
-  margin-bottom:10px;
-}
+h1{font-size:30px;margin-bottom:10px;}
 
 input, select{
   width:100%;
@@ -57,7 +54,7 @@ button{
   color:#9ec5ff;
 }
 
-.dua-box, .youtube-box{
+.box{
   margin-top:30px;
   background:rgba(255,255,255,.05);
   padding:18px;
@@ -103,13 +100,13 @@ button{
 <div class="result" id="result"></div>
 
 <!-- دعاء اليوم -->
-<div class="dua-box">
+<div class="box">
 <h3>دعاء اليوم</h3>
 <div id="dailyDua"></div>
 </div>
 
-<!-- البث المباشر -->
-<div class="youtube-box">
+<!-- البث -->
+<div class="box">
 <h3>البث المباشر 📺</h3>
 <iframe width="100%" height="230"
 src="https://www.youtube.com/embed/Cm1v4bteXbI"
@@ -124,6 +121,12 @@ style="border-radius:15px;">
 <script>
 const totalPages = 604;
 
+/* تحويل الأرقام العربية إلى إنجليزية */
+function convertToEnglishNumbers(str){
+  return str.replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+}
+
+/* تحديث التاريخ */
 function updateDateTime(){
   const now = new Date();
 
@@ -139,14 +142,20 @@ function updateDateTime(){
   "📅 " + hijri + "<br>⏰ " + time;
 }
 
+/* جلب اليوم الهجري بشكل صحيح */
 function getHijriDay(){
   const now = new Date();
-  const day = new Intl.DateTimeFormat('ar-SA-u-ca-islamic',{day:'numeric'}).format(now);
+  let day = new Intl.DateTimeFormat('ar-SA-u-ca-islamic',{
+    day:'numeric'
+  }).format(now);
+
+  day = convertToEnglishNumbers(day);
   return parseInt(day);
 }
 
 function calculatePlan(){
   const current = parseInt(document.getElementById("currentPage").value);
+
   if(!current || current<1 || current>604){
     alert("ادخل رقم صفحة صحيح بين 1 و 604");
     return;
@@ -155,7 +164,6 @@ function calculatePlan(){
   const remainingPages = totalPages - current;
 
   let days;
-
   const mode = document.querySelector('input[name="mode"]:checked').value;
 
   if(mode === "month"){
@@ -163,6 +171,11 @@ function calculatePlan(){
     days = 30 - hijriDay + 1;
   } else {
     days = parseInt(document.getElementById("daysSelect").value);
+  }
+
+  if(days <= 0){
+    alert("عدد الأيام غير صحيح");
+    return;
   }
 
   const perDay = Math.ceil(remainingPages / days);
@@ -174,18 +187,19 @@ function calculatePlan(){
   "✅ لتختم قبل نهاية المدة";
 }
 
+/* دعاء يومي */
 const duas = [
-"اللهم اجعلنا من أهل القرآن الذين هم أهلك وخاصتك.",
+"اللهم اجعلنا من أهل القرآن.",
 "اللهم افتح لنا أبواب رحمتك.",
-"اللهم أعنا على ذكرك وشكرك وحسن عبادتك.",
-"اللهم اجعل القرآن ربيع قلوبنا ونور صدورنا.",
+"اللهم أعنا على ذكرك وشكرك.",
+"اللهم اجعل القرآن ربيع قلوبنا.",
 "اللهم تقبل منا صالح الأعمال."
 ];
 
 function updateDailyDua(){
   const day = new Date().getDate();
-  const dua = duas[day % duas.length];
-  document.getElementById("dailyDua").innerText = dua;
+  document.getElementById("dailyDua").innerText =
+  duas[day % duas.length];
 }
 
 updateDateTime();
