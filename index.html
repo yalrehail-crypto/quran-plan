@@ -14,7 +14,6 @@
       padding:20px;
       text-align:center;
     }
-
     .card{
       max-width:520px;
       margin:20px auto;
@@ -23,26 +22,18 @@
       padding:22px;
       box-shadow: 0 10px 30px rgba(0,0,0,.35);
     }
-
-    h1{
-      margin:0 0 10px 0;
-      font-size:34px;
-      letter-spacing: .5px;
-    }
-
+    h1{ margin:0 0 12px 0; font-size:34px; }
     .sub{
       color:#cbd5e1;
       margin:8px 0;
       font-size:18px;
       line-height:1.7;
     }
-
     .divider{
       height:1px;
       background:rgba(255,255,255,.12);
       margin:16px 0;
     }
-
     input{
       width:100%;
       box-sizing:border-box;
@@ -56,7 +47,6 @@
       color:#111827;
       margin:10px 0;
     }
-
     button{
       width:100%;
       padding:18px;
@@ -78,10 +68,11 @@
       white-space:pre-line;
     }
 
-    .warn{
+    #error{
       margin-top:12px;
       color:#93c5fd;
-      font-size:22px;
+      font-size:20px;
+      min-height: 28px;
     }
 
     .footer{
@@ -98,27 +89,27 @@
   <div class="card">
     <h1>📖 برنامج ختم القرآن</h1>
 
-    <div class="sub" id="hijriLine">...</div>
-    <div class="sub" id="gregLine">...</div>
+    <!-- فقط: التاريخ الهجري + الوقت -->
+    <div class="sub" id="hijriDateLine">...</div>
     <div class="sub" id="timeLine">...</div>
-
-    <div class="sub" id="ramadanLine">🌙 ...</div>
 
     <div class="divider"></div>
 
-    <input id="currentPage" type="number" inputmode="numeric" placeholder="اكتب رقم الصفحة اللي وصلت لها (1 - 604)" />
+    <input id="currentPage" type="number" inputmode="numeric"
+           placeholder="اكتب رقم الصفحة اللي وصلت لها (1 - 604)" />
 
     <button onclick="calculatePlan()">احسب الخطة</button>
 
     <div id="result"></div>
-
-    <div class="warn" id="hint">الرجاء إدخال القيم بشكل صحيح</div>
+    <div id="error"></div>
 
     <div class="footer">🔥💻 مع تحيات :المبرمج راعي المدبله</div>
   </div>
 
   <script>
-    // تحويل الأرقام العربية/الهندية إلى أرقام لاتينية
+    const TOTAL_PAGES = 604;
+
+    // تحويل الأرقام العربية/الهندية إلى لاتينية
     function toLatinDigits(str) {
       return String(str)
         .replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
@@ -128,9 +119,7 @@
     // استخراج أجزاء التاريخ الهجري (يوم/شهر/سنة) بشكل ثابت
     function getHijriParts(date) {
       const fmt = new Intl.DateTimeFormat("ar-SA-u-ca-islamic", {
-        day: "numeric",
-        month: "numeric",
-        year: "numeric"
+        day: "numeric", month: "numeric", year: "numeric"
       });
       const parts = fmt.formatToParts(date);
       const obj = {};
@@ -142,35 +131,27 @@
       return obj;
     }
 
-    // اسم الشهر الهجري بالعربي
+    // اسم الشهر الهجري
     function getHijriMonthName(date) {
       return new Intl.DateTimeFormat("ar-SA-u-ca-islamic", { month: "long" }).format(date);
     }
 
-    // تحديث التاريخ/الوقت في الصفحة
-    function updateDateTime() {
+    // تحديث التاريخ الهجري + الوقت (بدون تكرار وبدون رمضان)
+    function updateHeader() {
       const now = new Date();
 
       const hijriDayName = new Intl.DateTimeFormat("ar-SA-u-ca-islamic", { weekday: "long" }).format(now);
       const hijriDate = new Intl.DateTimeFormat("ar-SA-u-ca-islamic", { day: "numeric", month: "long", year: "numeric" }).format(now);
-      const gregDate  = new Intl.DateTimeFormat("ar-SA", { day: "numeric", month: "long", year: "numeric" }).format(now);
 
-      const time = new Intl.DateTimeFormat("ar-SA", { hour: "numeric", minute: "2-digit", second: "2-digit" }).format(now);
+      const time = new Intl.DateTimeFormat("ar-SA", {
+        hour: "numeric", minute: "2-digit", second: "2-digit"
+      }).format(now);
 
-      document.getElementById("hijriLine").textContent = "📅 " + hijriDayName + "، " + hijriDate;
-      document.getElementById("gregLine").textContent  = "🗓️ " + gregDate;
-      document.getElementById("timeLine").textContent  = "⏰ " + time;
-
-      // رمضان = الشهر 9 في التقويم الهجري
-      const h = getHijriParts(now);
-      if (h.month === 9) {
-        document.getElementById("ramadanLine").textContent = "🌙 اليوم من رمضان: " + h.day;
-      } else {
-        document.getElementById("ramadanLine").textContent = "🌙 اليوم من رمضان: ليس رمضان حالياً";
-      }
+      document.getElementById("hijriDateLine").textContent = "📅 " + hijriDayName + "، " + hijriDate;
+      document.getElementById("timeLine").textContent = "⏰ " + time;
     }
 
-    // حساب الأيام المتبقية من الشهر الهجري الحالي (شامل اليوم)
+    // الأيام المتبقية من الشهر الهجري (شامل اليوم) — الحساب هجري
     function getDaysLeftInHijriMonthInclusive() {
       const today = new Date();
       const hNow = getHijriParts(today);
@@ -192,48 +173,42 @@
       return daysUntilMonthEnds + 1; // شامل اليوم
     }
 
-    // الدالة الأساسية
     function calculatePlan() {
-      const totalPages = 604;
-
       const input = document.getElementById("currentPage").value;
       const current = parseInt(input, 10);
 
       const result = document.getElementById("result");
-      const hint = document.getElementById("hint");
+      const error = document.getElementById("error");
+      result.textContent = "";
+      error.textContent = "";
 
-      if (isNaN(current) || current < 1 || current > totalPages) {
-        result.textContent = "";
-        hint.textContent = "❌ أدخل رقم صفحة صحيح بين 1 و 604";
+      if (isNaN(current) || current < 1 || current > TOTAL_PAGES) {
+        error.textContent = "❌ أدخل رقم صفحة صحيح بين 1 و 604";
         return;
       }
 
-      const remaining = totalPages - current;
-      const daysLeft = getDaysLeftInHijriMonthInclusive();
+      const remaining = TOTAL_PAGES - current;
 
-      // لو أنت في آخر صفحة خلاص
       if (remaining === 0) {
-        hint.textContent = "✅ ما شاء الله! أنت ختمت القرآن 🎉";
-        result.textContent = "";
+        result.textContent = "✅ ما شاء الله! أنت ختمت القرآن 🎉";
         return;
       }
 
+      const daysLeft = getDaysLeftInHijriMonthInclusive();
       const perDay = Math.ceil(remaining / daysLeft);
-
-      hint.textContent = "";
 
       const monthName = getHijriMonthName(new Date());
 
       result.textContent =
         "📘 الصفحات المتبقية: " + remaining + "\n" +
-        "📅 الأيام المتبقية من شهر " + monthName + ": " + daysLeft + "\n" +
+        "📅 الأيام المتبقية من شهر " + monthName + " (هجري): " + daysLeft + "\n" +
         "📖 اقرأ يومياً: " + perDay + " صفحة\n" +
         "✅ لتختم قبل نهاية الشهر الهجري";
     }
 
-    // شغل التحديث
-    updateDateTime();
-    setInterval(updateDateTime, 1000);
+    // تشغيل التحديث
+    updateHeader();
+    setInterval(updateHeader, 1000);
   </script>
 </body>
 </html>
