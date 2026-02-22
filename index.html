@@ -15,7 +15,7 @@
       text-align:center;
     }
     .card{
-      max-width:520px;
+      max-width:560px;
       margin:20px auto;
       background:#121b31;
       border-radius:18px;
@@ -56,9 +56,36 @@
       color:#fff;
       font-size:22px;
       cursor:pointer;
-      margin-top:6px;
+      margin-top:10px;
     }
     button:active{ transform: scale(.99); }
+
+    .modeBox{
+      text-align:right;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:14px;
+      padding:14px;
+      margin-top:10px;
+    }
+    .modeRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-start;
+      margin-top:10px;
+    }
+    label{ cursor:pointer; }
+    select{
+      flex:1;
+      min-width:150px;
+      padding:12px;
+      border-radius:12px;
+      border:none;
+      outline:none;
+      font-size:18px;
+    }
 
     #result{
       margin-top:16px;
@@ -67,14 +94,12 @@
       color:#93c5fd;
       white-space:pre-line;
     }
-
     #error{
       margin-top:12px;
       color:#93c5fd;
       font-size:20px;
       min-height: 28px;
     }
-
     .footer{
       margin-top:18px;
       padding-top:14px;
@@ -97,6 +122,30 @@
     <input id="currentPage" type="number" inputmode="numeric"
            placeholder="اكتب رقم الصفحة اللي وصلت لها (1 - 604)" />
 
+    <div class="modeBox">
+      <div style="font-size:18px; color:#cbd5e1;">طريقة الحساب:</div>
+
+      <div class="modeRow">
+        <label>
+          <input type="radio" name="mode" value="hijriMonth" checked onchange="toggleModeUI()">
+          الخيار الأول: حسب الشهر الهجري (المتبقي)
+        </label>
+      </div>
+
+      <div class="modeRow">
+        <label>
+          <input type="radio" name="mode" value="days" onchange="toggleModeUI()">
+          الخيار الثاني: حسب مدة (بالأيام)
+        </label>
+
+        <select id="daysSelect" disabled>
+          <option value="60">60 يوم</option>
+          <option value="30" selected>30 يوم</option>
+          <option value="15">15 يوم</option>
+        </select>
+      </div>
+    </div>
+
     <button onclick="calculatePlan()">احسب الخطة</button>
 
     <div id="result"></div>
@@ -108,7 +157,6 @@
   <script>
     const TOTAL_PAGES = 604;
 
-    // تحويل الأرقام العربية/الهندية إلى لاتينية
     function toLatinDigits(str) {
       return String(str)
         .replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
@@ -146,7 +194,7 @@
       document.getElementById("timeLine").textContent = "⏰ " + time;
     }
 
-    // ✅ الطريقة الصحيحة: نحسب الأيام المتبقية حتى بداية الشهر الهجري القادم (شامل اليوم)
+    // الأيام المتبقية من الشهر الهجري (شامل اليوم)
     function getDaysLeftInHijriMonthInclusive() {
       const today = new Date();
       const hNow = getHijriParts(today);
@@ -154,23 +202,29 @@
       let d = new Date(today);
       let count = 1; // شامل اليوم
 
-      // نمشي يوم بيوم لين نوصل لليوم 1 من الشهر الهجري اللي بعده
       while (true) {
         d.setDate(d.getDate() + 1);
         const h = getHijriParts(d);
 
-        // بداية شهر هجري جديد
         if (h.day === 1 && (h.month !== hNow.month || h.year !== hNow.year)) {
           break;
         }
 
         count++;
-
-        // حماية من اللوب لو صار شيء غريب
-        if (count > 35) break;
+        if (count > 35) break; // حماية
       }
 
       return count;
+    }
+
+    function getSelectedMode() {
+      return document.querySelector('input[name="mode"]:checked').value;
+    }
+
+    function toggleModeUI() {
+      const mode = getSelectedMode();
+      const daysSelect = document.getElementById("daysSelect");
+      daysSelect.disabled = (mode !== "days");
     }
 
     function calculatePlan() {
@@ -194,18 +248,35 @@
         return;
       }
 
-      const daysLeft = getDaysLeftInHijriMonthInclusive();
-      const perDay = Math.ceil(remaining / daysLeft);
+      const mode = getSelectedMode();
+      let daysLeft = 0;
+      let titleLine = "";
 
-      const monthName = getHijriMonthName(new Date());
+      if (mode === "hijriMonth") {
+        daysLeft = getDaysLeftInHijriMonthInclusive();
+        const monthName = getHijriMonthName(new Date());
+        titleLine = "📅 الأيام المتبقية من شهر " + monthName + " (هجري): " + daysLeft;
+      } else {
+        daysLeft = parseInt(document.getElementById("daysSelect").value, 10);
+        titleLine = "📅 المدة المختارة: " + daysLeft + " يوم";
+      }
+
+      // حماية: لو اختار 0 بالغلط
+      if (!daysLeft || daysLeft < 1) {
+        error.textContent = "❌ المدة غير صحيحة";
+        return;
+      }
+
+      const perDay = Math.ceil(remaining / daysLeft);
 
       result.textContent =
         "📘 الصفحات المتبقية: " + remaining + "\n" +
-        "📅 الأيام المتبقية من شهر " + monthName + " (هجري): " + daysLeft + "\n" +
+        titleLine + "\n" +
         "📖 لازم تقرأ يومياً: " + perDay + " صفحة\n" +
-        "✅ عشان تختم قبل نهاية الشهر الهجري";
+        "✅ عشان تختم قبل نهاية المدة";
     }
 
+    toggleModeUI();
     updateHeader();
     setInterval(updateHeader, 1000);
   </script>
