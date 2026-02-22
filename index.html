@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>برنامج ختم القرآن</title>
 
 <style>
 body{
-  font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial;
+  font-family: system-ui;
   background:#0b1220;
   color:#fff;
   margin:0;
@@ -22,12 +22,8 @@ body{
   padding:22px;
   box-shadow:0 10px 30px rgba(0,0,0,.35);
 }
-h1{margin:0 0 10px 0;font-size:32px;}
-.sub{
-  color:#cbd5e1;
-  margin:6px 0;
-  font-size:18px;
-}
+h1{margin:0 0 10px 0;font-size:30px;}
+.sub{color:#cbd5e1;margin:6px 0;font-size:18px;}
 .divider{
   height:1px;
   background:rgba(255,255,255,.12);
@@ -35,15 +31,15 @@ h1{margin:0 0 10px 0;font-size:32px;}
 }
 .modeTitle{
   font-size:18px;
-  margin-bottom:8px;
+  margin-bottom:6px;
   color:#cbd5e1;
 }
 .modeRow{
   text-align:right;
-  margin-bottom:10px;
+  margin-bottom:8px;
 }
 select{
-  padding:8px;
+  padding:6px 10px;
   border-radius:8px;
   border:none;
   font-size:16px;
@@ -69,7 +65,7 @@ button{
   cursor:pointer;
 }
 #result{
-  margin-top:16px;
+  margin-top:18px;
   font-size:22px;
   line-height:1.8;
   color:#93c5fd;
@@ -117,7 +113,7 @@ button{
 </div>
 
 <input id="currentPage" type="number"
-placeholder="اكتب رقم الصفحة اللي وصلت لها (1 - 604)" />
+placeholder="اكتب رقم الصفحة اللي وصلت لها (1 - 604)">
 
 <button onclick="calculatePlan()">احسب الخطة</button>
 
@@ -130,44 +126,53 @@ placeholder="اكتب رقم الصفحة اللي وصلت لها (1 - 604)" />
 <script>
 const TOTAL_PAGES = 604;
 
+// تحويل الأرقام العربية إلى إنجليزية
+function toEnDigits(str){
+  return String(str)
+    .replace(/[٠-٩]/g, d => "0123456789"["٠١٢٣٤٥٦٧٨٩".indexOf(d)])
+    .replace(/[۰-۹]/g, d => "0123456789"["۰۱۲۳۴۵۶۷۸۹".indexOf(d)]);
+}
+
+// استخراج التاريخ الهجري صحيح
 function getHijriParts(date){
   const fmt = new Intl.DateTimeFormat("ar-SA-u-ca-islamic",{
     day:"numeric",month:"numeric",year:"numeric"
   });
   const parts = fmt.formatToParts(date);
-  let obj={};
+  let obj = {};
   parts.forEach(p=>{
-    if(p.type==="day") obj.day=parseInt(p.value);
-    if(p.type==="month") obj.month=parseInt(p.value);
-    if(p.type==="year") obj.year=parseInt(p.value);
+    if(p.type==="day") obj.day = Number(toEnDigits(p.value));
+    if(p.type==="month") obj.month = Number(toEnDigits(p.value));
+    if(p.type==="year") obj.year = Number(toEnDigits(p.value));
   });
   return obj;
 }
 
 function updateHeader(){
-  const now=new Date();
-  const hijri=new Intl.DateTimeFormat("ar-SA-u-ca-islamic",
+  const now = new Date();
+  const hijri = new Intl.DateTimeFormat("ar-SA-u-ca-islamic",
   {weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(now);
 
-  const time=new Intl.DateTimeFormat("ar-SA",
+  const time = new Intl.DateTimeFormat("ar-SA",
   {hour:"numeric",minute:"2-digit",second:"2-digit"}).format(now);
 
   document.getElementById("hijriDateLine").textContent="📅 "+hijri;
   document.getElementById("timeLine").textContent="⏰ "+time;
 }
 
+// حساب الأيام المتبقية من الشهر الهجري (شامل اليوم)
 function getDaysLeftInHijriMonth(){
-  const today=new Date();
-  const hNow=getHijriParts(today);
-  let d=new Date(today);
-  let count=1;
+  const today = new Date();
+  const hNow = getHijriParts(today);
+  let d = new Date(today);
+  let count = 1;
 
   while(true){
     d.setDate(d.getDate()+1);
-    const h=getHijriParts(d);
+    const h = getHijriParts(d);
     if(h.day===1 && h.month!==hNow.month) break;
     count++;
-    if(count>35) break;
+    if(count>30) break; // حماية
   }
   return count;
 }
@@ -187,7 +192,7 @@ function calculatePlan(){
     return;
   }
 
-  const remaining=TOTAL_PAGES-current;
+  const remaining = TOTAL_PAGES - current;
   if(remaining<=0){
     result.textContent="✅ ما شاء الله! ختمت القرآن 🎉";
     return;
@@ -204,7 +209,7 @@ function calculatePlan(){
 
   const perDay=Math.ceil(remaining/days);
 
-  result.textContent=
+  result.textContent =
   "📘 الصفحات المتبقية: "+remaining+"\n"+
   "📅 عدد الأيام: "+days+"\n"+
   "📖 اقرأ يومياً: "+perDay+" صفحة\n"+
