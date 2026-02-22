@@ -1,1 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>برنامج ختم القرآن</title>
 
+<style>
+body{
+    font-family: system-ui;
+    background:#0b1220;
+    color:white;
+    margin:0;
+    padding:20px;
+    text-align:center;
+}
+
+.card{
+    background:#121b31;
+    padding:20px;
+    border-radius:15px;
+    max-width:500px;
+    margin:auto;
+}
+
+input,button{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:8px;
+    border:none;
+    font-size:16px;
+}
+
+button{
+    background:#2563eb;
+    color:white;
+    cursor:pointer;
+}
+
+.result{
+    margin-top:15px;
+    font-size:18px;
+    color:#4da6ff;
+}
+
+.info{
+    margin:6px 0;
+    font-size:16px;
+    color:#ccc;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>📖 برنامج ختم القرآن</h2>
+
+    <div class="info">📅 <span id="date"></span></div>
+    <div class="info">🕒 <span id="time"></span></div>
+
+    <hr style="margin:15px 0; opacity:0.2;">
+
+    <input type="number" id="currentPage" placeholder="أدخل رقم الصفحة التي وصلت لها">
+
+    <button onclick="calculate()">احسب الخطة</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+function updateDateTime() {
+    const now = new Date();
+    document.getElementById("date").innerText =
+        now.toLocaleDateString('ar-SA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    document.getElementById("time").innerText =
+        now.toLocaleTimeString('ar-SA');
+}
+
+function calculate(){
+    const totalPages = 604;
+    const current = parseInt(document.getElementById("currentPage").value);
+
+    if(isNaN(current) || current < 1 || current > 604){
+        document.getElementById("result").innerText =
+            "الرجاء إدخال رقم صفحة صحيح بين 1 و 604";
+        return;
+    }
+
+    const remaining = totalPages - current;
+    const perDay = Math.ceil(remaining / 30);
+
+    document.getElementById("result").innerHTML =
+        "📘 الصفحات المتبقية: " + remaining + "<br>" +
+        "📖 اقرأ يومياً: " + perDay + " صفحة لتختم خلال 30 يوم";
+}
+
+updateDateTime();
+setInterval(updateDateTime,1000);
+</script>
+
+</body>
+</html>
