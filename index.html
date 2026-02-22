@@ -70,15 +70,8 @@ button{
 </div>
 
 <script>
-function updateDateTime() {
-    const now = new Date();
-    document.getElementById("date").innerText =
-        now.toLocaleDateString('ar-SA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-    document.getElementById("time").innerText =
-        now.toLocaleTimeString('ar-SA');
-}
+function calculatePlan(){
 
-function calculate(){
     const totalPages = 604;
     const current = parseInt(document.getElementById("currentPage").value);
 
@@ -89,37 +82,49 @@ function calculate(){
     }
 
     const remaining = totalPages - current;
-    // === حساب الأيام المتبقية من الشهر الهجري الحالي تلقائياً ===
-function getHijriParts(date) {
-  const fmt = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
-    day: 'numeric',
-    month: 'numeric',
-    year: 'numeric'
-  });
-  const parts = fmt.formatToParts(date);
-  const obj = {};
-  for (const p of parts) {
-    if (p.type === 'day') obj.day = parseInt(p.value, 10);
-    if (p.type === 'month') obj.month = parseInt(p.value, 10);
-    if (p.type === 'year') obj.year = parseInt(p.value, 10);
-  }
-  return obj;
+
+    // ===== حساب الأيام المتبقية من الشهر الهجري =====
+
+    function getHijriParts(date) {
+        const fmt = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+            day: 'numeric',
+            month: 'numeric',
+            year: 'numeric'
+        });
+        const parts = fmt.formatToParts(date);
+        const obj = {};
+        for (const p of parts) {
+            if (p.type === 'day') obj.day = parseInt(p.value, 10);
+            if (p.type === 'month') obj.month = parseInt(p.value, 10);
+            if (p.type === 'year') obj.year = parseInt(p.value, 10);
+        }
+        return obj;
+    }
+
+    const today = new Date();
+    const hNow = getHijriParts(today);
+
+    let temp = new Date(today);
+    let daysUntilMonthEnds = 0;
+
+    while (true) {
+        temp.setDate(temp.getDate() + 1);
+        const hTemp = getHijriParts(temp);
+
+        if (hTemp.month !== hNow.month || hTemp.year !== hNow.year) break;
+
+        daysUntilMonthEnds++;
+    }
+
+    const daysAvailable = daysUntilMonthEnds + 1;
+
+    const perDay = Math.ceil(remaining / daysAvailable);
+
+    document.getElementById("result").innerHTML =
+        "📘 الصفحات المتبقية: " + remaining + "<br>" +
+        "📅 الأيام المتبقية من الشهر: " + daysAvailable + "<br>" +
+        "📖 اقرأ يومياً: " + perDay + " صفحة لتختم قبل نهاية الشهر";
 }
-
-const today = new Date();
-const hNow = getHijriParts(today);
-
-// نحسب كم يوم باقي لين يتغير الشهر الهجري (يعني نهاية الشهر الحالي)
-let temp = new Date(today);
-let daysUntilMonthEnds = 0;
-
-while (true) {
-  temp.setDate(temp.getDate() + 1);
-  const hTemp = getHijriParts(temp);
-
-  // إذا تغيّر الشهر أو السنة الهجرية وقف
-  if (hTemp.month !== hNow.month || hTemp.year !== hNow.year) break;
-
   daysUntilMonthEnds++;
 }
 
