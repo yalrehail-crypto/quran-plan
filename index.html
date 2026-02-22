@@ -1,502 +1,197 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>برنامج ختم القرآن</title>
-  <style>
-    :root{
-      --bg:#0b1220;
-      --card:#121b31;
-      --muted:#a8b3c7;
-      --text:#ffffff;
-      --accent:#3f6cff;
-      --accent2:#2f57d8;
-      --border:rgba(255,255,255,.12);
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
-      background: radial-gradient(1200px 800px at 50% 10%, rgba(63,108,255,.22), transparent 55%),
-                  radial-gradient(900px 650px at 20% 30%, rgba(47,87,216,.18), transparent 50%),
-                  var(--bg);
-      color:var(--text);
-      min-height:100vh;
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      padding:26px 14px;
-      text-align:center;
-    }
-    .wrap{
-      width:min(560px, 100%);
-    }
-    .card{
-      background: linear-gradient(180deg, rgba(18,27,49,.92), rgba(18,27,49,.78));
-      border:1px solid var(--border);
-      border-radius:26px;
-      padding:26px 18px 18px;
-      box-shadow: 0 14px 40px rgba(0,0,0,.35);
-      backdrop-filter: blur(10px);
-    }
-    h1{
-      margin:0 0 10px;
-      font-size:44px;
-      letter-spacing:.2px;
-      font-weight:800;
-      line-height:1.2;
-    }
-    .sub{
-      margin:0;
-      color:var(--muted);
-      font-size:20px;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      align-items:center;
-      justify-content:center;
-    }
-    .subRow{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      justify-content:center;
-      flex-wrap:wrap;
-    }
-    .line{
-      height:1px;
-      width:100%;
-      background:rgba(255,255,255,.12);
-      margin:18px 0;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>برنامج ختم القرآن</title>
 
-    .methodTitle{
-      color:var(--muted);
-      font-size:18px;
-      margin:0 0 10px;
-      font-weight:700;
-    }
-
-    .methods{
-      display:grid;
-      gap:10px;
-      margin-bottom:14px;
-      text-align:right;
-    }
-    .methodRow{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:16px;
-      padding:10px 12px;
-    }
-    .methodRow .right{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-size:18px;
-      color:#e9efff;
-    }
-    .methodRow input[type="radio"]{
-      width:18px;height:18px;
-      accent-color: var(--accent);
-    }
-
-    .daysPicker{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      opacity:.7;
-      pointer-events:none;
-    }
-    .daysPicker select{
-      appearance:none;
-      -webkit-appearance:none;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
-      color:#fff;
-      border-radius:14px;
-      padding:10px 14px;
-      font-size:18px;
-      outline:none;
-    }
-
-    .inputs{
-      display:grid;
-      gap:14px;
-      margin-top:10px;
-    }
-    input[type="number"]{
-      width:100%;
-      padding:18px 16px;
-      font-size:22px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      outline:none;
-      background: rgba(255,255,255,.96);
-      color:#0b1220;
-      text-align:right;
-    }
-    button{
-      width:100%;
-      border:none;
-      border-radius:20px;
-      padding:18px 16px;
-      font-size:28px;
-      font-weight:800;
-      color:#fff;
-      background: var(--accent);
-      box-shadow: 0 12px 26px rgba(63,108,255,.35);
-      cursor:pointer;
-    }
-    button:active{transform:scale(.99)}
-    .result{
-      margin-top:18px;
-      color:#a9c6ff;
-      font-size:34px;
-      line-height:1.55;
-      padding:6px 4px 0;
-      min-height:40px;
-    }
-    .result small{
-      display:block;
-      color:rgba(255,255,255,.55);
-      font-size:16px;
-      margin-top:10px;
-    }
-
-    .duaCard{
-      margin-top:14px;
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:18px;
-      padding:16px 14px;
-      text-align:center;
-    }
-    .duaTitle{
-      margin:0 0 8px;
-      color:rgba(255,255,255,.75);
-      font-size:18px;
-      font-weight:700;
-    }
-    .duaText{
-      margin:0;
-      font-size:22px;
-      color:#ffffff;
-      line-height:1.6;
-    }
-
-    .footer{
-      margin-top:14px;
-      padding-top:14px;
-      border-top:1px solid rgba(255,255,255,.12);
-      color:rgba(255,255,255,.55);
-      font-size:16px;
-      display:flex;
-      justify-content:center;
-      gap:8px;
-      align-items:center;
-    }
-
-    .note{
-      margin-top:12px;
-      color:rgba(255,255,255,.45);
-      font-size:16px;
-      line-height:1.6;
-    }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <div class="card">
-      <h1>برنامج ختم القرآن <span aria-hidden="true">📖</span></h1>
-
-      <div class="sub">
-        <div class="subRow" id="hijriDate">—</div>
-        <div class="subRow" id="clock">—</div>
-      </div>
-
-      <div class="line"></div>
-
-      <div class="methodTitle">طريقة الحساب</div>
-
-      <div class="methods">
-        <label class="methodRow">
-          <div class="right">
-            <span aria-hidden="true">🗓️</span>
-            <span>حسب الشهر الهجري (المتبقي)</span>
-          </div>
-          <input type="radio" name="mode" value="month" checked />
-        </label>
-
-        <label class="methodRow">
-          <div class="right">
-            <span aria-hidden="true">⏳</span>
-            <span>حسب مدة بالأيام</span>
-            <div class="daysPicker" id="daysPicker">
-              <select id="daysSelect">
-                <option value="15">15 يوم</option>
-                <option value="30" selected>30 يوم</option>
-                <option value="60">60 يوم</option>
-              </select>
-            </div>
-          </div>
-          <input type="radio" name="mode" value="fixed" />
-        </label>
-      </div>
-
-      <div class="inputs">
-        <input id="currentPage" type="number" inputmode="numeric" placeholder="اكتب رقم الصفحة اللي وصلت لها (1 - 604)" min="1" max="604"/>
-        <button id="calcBtn">احسب الخطة</button>
-      </div>
-
-      <div class="result" id="result"></div>
-
-      <div class="duaCard">
-        <div class="duaTitle">دعاء اليوم</div>
-        <p class="duaText" id="duaText">—</p>
-      </div>
-
-      <div class="footer">
-        <span aria-hidden="true">🔥</span><span aria-hidden="true">💻</span>
-        <span>مع تحيات : المبرمج راعي المدبله</span>
-      </div>
-
-      <div class="note">ملاحظة: الحساب يعتمد على الوقت/التاريخ في جهازك.</div>
-    </div>
-  </div>
-
-<script>
-  // =========================
-  // إعدادات عامة
-  // =========================
-  const TOTAL_PAGES = 604;
-
-  // أدعية (تتبدل يوميًا)
-  const duas = [
-    "اللهم اجعلنا من أهل القرآن الذين هم أهلك وخاصتك، وارفعنا به درجات.",
-    "اللهم ارزقنا تلاوة القرآن آناء الليل وأطراف النهار على الوجه الذي يرضيك عنا.",
-    "اللهم افتح لنا أبواب رحمتك بالقرآن، واجعلنا من العاملين به.",
-    "اللهم اجعل القرآن ربيع قلوبنا، ونور صدورنا، وجلاء أحزاننا.",
-    "اللهم علّمنا من القرآن ما جهلنا، وذكّرنا منه ما نُسّينا، وارزقنا تلاوته حق تلاوته.",
-    "اللهم اجعل القرآن شفيعًا لنا يوم القيامة، ولا تجعله خصيمًا علينا.",
-    "اللهم اجعلنا ممن يقرأ القرآن فيرتقي، ولا تجعلنا ممن يقرأه فيشقى.",
-    "اللهم ارزقنا الإخلاص في القراءة والعمل، واغفر لنا ولوالدينا وللمسلمين."
-  ];
-
-  // =========================
-  // دوال التاريخ/الوقت
-  // =========================
-  function pad2(n){ return String(n).padStart(2,'0'); }
-
-  function updateDateTime(){
-    const now = new Date();
-
-    // التاريخ الهجري
-    const hijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    }).format(now);
-
-    document.getElementById('hijriDate').textContent = hijri;
-
-    // الوقت
-    const time = new Intl.DateTimeFormat('ar-SA', {
-      hour: 'numeric',
-      minute: '2-digit',
-      second: '2-digit'
-    }).format(now);
-
-    document.getElementById('clock').textContent = time;
-  }
-
-  // حساب رقم اليوم داخل الشهر الهجري + طول الشهر + المتبقي
-  function getHijriMonthInfo(){
-    const now = new Date();
-
-    // نأخذ أجزاء التاريخ الهجري: day/month/year
-    const parts = new Intl.DateTimeFormat('en-US-u-ca-islamic', {
-      day: 'numeric',
-      month: 'numeric',
-      year: 'numeric'
-    }).formatToParts(now);
-
-    const get = (type) => Number(parts.find(p => p.type === type)?.value);
-    const hDay = get('day');    // 1..30
-    const hMonth = get('month');
-    const hYear = get('year');
-
-    // لتحديد طول الشهر الهجري: نجرب 30 ثم 29
-    // نتحقق بتوليد تاريخ هجري بصيغة ar-SA-u-ca-islamic عبر تحويله مباشرة غير متاح كـ Date حقيقي،
-    // فنعتمد على طريقة آمنة: نحاول إيجاد "اليوم 30" في نفس الشهر عبر for loop باستخدام offset أيام ميلادية.
-    // الحل العملي: نبحث عن آخر يوم في الشهر الهجري بالانتقال للأمام حتى يتغير الشهر.
-    let probe = new Date(now);
-    let lastHijriDay = hDay;
-    let lastMonth = hMonth;
-    let lastYear = hYear;
-
-    // نمشي للأمام حتى 40 يوم كحد أقصى لالتقاط نهاية الشهر الهجري
-    for(let i=0;i<40;i++){
-      const p = new Intl.DateTimeFormat('en-US-u-ca-islamic', {
-        day: 'numeric', month: 'numeric', year: 'numeric'
-      }).formatToParts(probe);
-
-      const d = Number(p.find(x=>x.type==='day')?.value);
-      const m = Number(p.find(x=>x.type==='month')?.value);
-      const y = Number(p.find(x=>x.type==='year')?.value);
-
-      if (m !== lastMonth || y !== lastYear){
-        // رجعنا يوم واحد للخلف => هذا آخر يوم في الشهر السابق
-        probe.setDate(probe.getDate()-1);
-        const p2 = new Intl.DateTimeFormat('en-US-u-ca-islamic', {
-          day: 'numeric', month: 'numeric', year: 'numeric'
-        }).formatToParts(probe);
-        lastHijriDay = Number(p2.find(x=>x.type==='day')?.value);
-        break;
-      }
-
-      lastHijriDay = d;
-      probe.setDate(probe.getDate()+1);
-    }
-
-    const daysInHijriMonth = lastHijriDay;      // 29 أو 30 غالبًا
-    const remainingInMonth = Math.max(1, daysInHijriMonth - hDay + 1); // شامل اليوم الحالي
-
-    return { hDay, hMonth, hYear, daysInHijriMonth, remainingInMonth };
-  }
-
-  // =========================
-  // الدعاء اليومي (يتغير كل يوم)
-  // =========================
-  function updateDailyDua(){
-    const now = new Date();
-    // رقم ثابت لليوم (UTC) عشان ما يتغير مع الساعة
-    const key = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
-    const idx = Math.abs(Math.floor(key / 86400000)) % duas.length;
-    document.getElementById('duaText').textContent = duas[idx];
-  }
-
-  // =========================
-  // طريقة الحساب
-  // =========================
-  const modeRadios = [...document.querySelectorAll('input[name="mode"]')];
-  const daysPicker = document.getElementById('daysPicker');
-  const daysSelect = document.getElementById('daysSelect');
-
-  function refreshModeUI(){
-    const mode = modeRadios.find(r=>r.checked)?.value;
-    if(mode === 'fixed'){
-      daysPicker.style.opacity = '1';
-      daysPicker.style.pointerEvents = 'auto';
-    }else{
-      daysPicker.style.opacity = '.7';
-      daysPicker.style.pointerEvents = 'none';
-    }
-  }
-
-  modeRadios.forEach(r => r.addEventListener('change', refreshModeUI));
-
-  // =========================
-  // الحساب الرئيسي
-  // =========================
-  function calculatePlan(){
-    const page = parseInt(document.getElementById('currentPage').value, 10);
-    const resultEl = document.getElementById('result');
-
-    if(Number.isNaN(page) || page < 1 || page > TOTAL_PAGES){
-      resultEl.innerHTML = `الرجاء إدخال رقم صفحة صحيح بين 1 و ${TOTAL_PAGES}.`;
-      return;
-    }
-
-    const remainingPages = TOTAL_PAGES - page;
-
-    // تحديد عدد الأيام حسب الوضع
-    const mode = modeRadios.find(r=>r.checked)?.value;
-
-    let days;
-    let daysLabel;
-
-    if(mode === 'month'){
-      const info = getHijriMonthInfo();
-      days = info.remainingInMonth;
-      daysLabel = `عدد الأيام (حسب المتبقي من الشهر الهجري): ${days}`;
-    } else {
-      days = parseInt(daysSelect.value, 10);
-      daysLabel = `عدد الأيام (حسب المدة): ${days}`;
-    }
-
-    // حماية: لا نسمح 0 يوم
-    days = Math.max(1, days);
-
-    // كم صفحة يوميا؟ (تقريب للأعلى)
-    const perDay = remainingPages <= 0 ? 0 : Math.ceil(remainingPages / days);
-
-    // رسالة ختامية
-    const ok = perDay > 0 ? "✅ لتختم قبل نهاية المدة" : "✅ أنت ختمت القرآن بالفعل";
-
-    resultEl.innerHTML = `
-      <div>📘 الصفحات المتبقية: <b>${remainingPages}</b></div>
-      <div>📅 ${daysLabel}</div>
-      <div>📖 اقرأ يومياً: <b>${perDay}</b> صفحة</div>
-      <div>${ok}</div>
-    `;
-  }
-
-  // زر + Enter
-  document.getElementById('calcBtn').addEventListener('click', calculatePlan);
-  document.getElementById('currentPage').addEventListener('keydown', (e)=>{
-    if(e.key === 'Enter') calculatePlan();
-  });
-
-  // تشغيل أولي + تحديثات
-  refreshModeUI();
-  updateDateTime();
-  updateDailyDua();
-
-  setInterval(updateDateTime, 1000);
-
-  // يحدث الدعاء لو تغيّر اليوم
-  setInterval(()=>{
-    updateDailyDua();
-  }, 60 * 1000);
-</script>
-
-<!-- 🔴 بداية قسم اليوتيوب -->
-<div style="
-  margin-top:25px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:20px;
-  padding:15px;
+<style>
+body{
+  font-family: system-ui;
+  background:#0b1220;
+  color:white;
+  margin:0;
+  padding:20px;
   text-align:center;
-">
+}
 
-  <div style="
-    font-size:20px;
-    margin-bottom:12px;
-    color:#cbd5e1;
-    font-weight:600;
-  ">
-    البث المباشر 📺
-  </div>
+.card{
+  background:#121b31;
+  padding:25px;
+  border-radius:20px;
+  max-width:500px;
+  margin:auto;
+  box-shadow:0 0 40px rgba(0,0,0,.4);
+}
 
-  <iframe 
-    width="100%" 
-    height="220" 
-    src="https://www.youtube.com/embed/Cm1v4bteXbI"
-    frameborder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen
-    style="border-radius:14px;">
-  </iframe>
+h1{
+  font-size:32px;
+  margin-bottom:10px;
+}
+
+input, select{
+  width:100%;
+  padding:15px;
+  border-radius:12px;
+  border:none;
+  font-size:18px;
+  margin-top:10px;
+}
+
+button{
+  width:100%;
+  padding:18px;
+  margin-top:15px;
+  border:none;
+  border-radius:14px;
+  background:#4f6df5;
+  color:white;
+  font-size:22px;
+  cursor:pointer;
+}
+
+.result{
+  margin-top:25px;
+  font-size:22px;
+  line-height:1.8;
+  color:#9ec5ff;
+}
+
+.dua-box, .youtube-box{
+  margin-top:30px;
+  background:rgba(255,255,255,.05);
+  padding:18px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.1);
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>📖 برنامج ختم القرآن</h1>
+
+<div id="dateTime"></div>
+
+<hr style="margin:20px 0; opacity:.2;">
+
+<h3>طريقة الحساب</h3>
+
+<label>
+<input type="radio" name="mode" value="month" checked>
+حسب الشهر الهجري (المتبقي)
+</label>
+<br><br>
+
+<label>
+<input type="radio" name="mode" value="days">
+حسب مدة بالأيام
+</label>
+
+<select id="daysSelect">
+<option value="60">60 يوم</option>
+<option value="30" selected>30 يوم</option>
+<option value="15">15 يوم</option>
+</select>
+
+<input type="number" id="currentPage" placeholder="اكتب رقم الصفحة اللي وصلت لها">
+
+<button onclick="calculatePlan()">احسب الخطة</button>
+
+<div class="result" id="result"></div>
+
+<!-- دعاء اليوم -->
+<div class="dua-box">
+<h3>دعاء اليوم</h3>
+<div id="dailyDua"></div>
+</div>
+
+<!-- البث المباشر -->
+<div class="youtube-box">
+<h3>البث المباشر 📺</h3>
+<iframe width="100%" height="230"
+src="https://www.youtube.com/embed/Cm1v4bteXbI"
+frameborder="0"
+allowfullscreen
+style="border-radius:15px;">
+</iframe>
+</div>
 
 </div>
-<!-- 🔴 نهاية قسم اليوتيوب -->
+
+<script>
+const totalPages = 604;
+
+function updateDateTime(){
+  const now = new Date();
+
+  const hijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic',{
+    day:'numeric',
+    month:'long',
+    year:'numeric'
+  }).format(now);
+
+  const time = now.toLocaleTimeString('ar-SA');
+
+  document.getElementById("dateTime").innerHTML =
+  "📅 " + hijri + "<br>⏰ " + time;
+}
+
+function getHijriDay(){
+  const now = new Date();
+  const day = new Intl.DateTimeFormat('ar-SA-u-ca-islamic',{day:'numeric'}).format(now);
+  return parseInt(day);
+}
+
+function calculatePlan(){
+  const current = parseInt(document.getElementById("currentPage").value);
+  if(!current || current<1 || current>604){
+    alert("ادخل رقم صفحة صحيح بين 1 و 604");
+    return;
+  }
+
+  const remainingPages = totalPages - current;
+
+  let days;
+
+  const mode = document.querySelector('input[name="mode"]:checked').value;
+
+  if(mode === "month"){
+    const hijriDay = getHijriDay();
+    days = 30 - hijriDay + 1;
+  } else {
+    days = parseInt(document.getElementById("daysSelect").value);
+  }
+
+  const perDay = Math.ceil(remainingPages / days);
+
+  document.getElementById("result").innerHTML =
+  "📘 الصفحات المتبقية: " + remainingPages + "<br>" +
+  "📆 عدد الأيام: " + days + "<br>" +
+  "📖 اقرأ يوميًا: " + perDay + " صفحة<br>" +
+  "✅ لتختم قبل نهاية المدة";
+}
+
+const duas = [
+"اللهم اجعلنا من أهل القرآن الذين هم أهلك وخاصتك.",
+"اللهم افتح لنا أبواب رحمتك.",
+"اللهم أعنا على ذكرك وشكرك وحسن عبادتك.",
+"اللهم اجعل القرآن ربيع قلوبنا ونور صدورنا.",
+"اللهم تقبل منا صالح الأعمال."
+];
+
+function updateDailyDua(){
+  const day = new Date().getDate();
+  const dua = duas[day % duas.length];
+  document.getElementById("dailyDua").innerText = dua;
+}
+
+updateDateTime();
+updateDailyDua();
+setInterval(updateDateTime,1000);
+</script>
+
 </body>
 </html>
