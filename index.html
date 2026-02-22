@@ -89,7 +89,6 @@
   <div class="card">
     <h1>📖 برنامج ختم القرآن</h1>
 
-    <!-- فقط: التاريخ الهجري + الوقت -->
     <div class="sub" id="hijriDateLine">...</div>
     <div class="sub" id="timeLine">...</div>
 
@@ -116,7 +115,6 @@
         .replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
     }
 
-    // استخراج أجزاء التاريخ الهجري (يوم/شهر/سنة) بشكل ثابت
     function getHijriParts(date) {
       const fmt = new Intl.DateTimeFormat("ar-SA-u-ca-islamic", {
         day: "numeric", month: "numeric", year: "numeric"
@@ -131,15 +129,12 @@
       return obj;
     }
 
-    // اسم الشهر الهجري
     function getHijriMonthName(date) {
       return new Intl.DateTimeFormat("ar-SA-u-ca-islamic", { month: "long" }).format(date);
     }
 
-    // تحديث التاريخ الهجري + الوقت (بدون تكرار وبدون رمضان)
     function updateHeader() {
       const now = new Date();
-
       const hijriDayName = new Intl.DateTimeFormat("ar-SA-u-ca-islamic", { weekday: "long" }).format(now);
       const hijriDate = new Intl.DateTimeFormat("ar-SA-u-ca-islamic", { day: "numeric", month: "long", year: "numeric" }).format(now);
 
@@ -151,26 +146,31 @@
       document.getElementById("timeLine").textContent = "⏰ " + time;
     }
 
-    // الأيام المتبقية من الشهر الهجري (شامل اليوم) — الحساب هجري
+    // ✅ الطريقة الصحيحة: نحسب الأيام المتبقية حتى بداية الشهر الهجري القادم (شامل اليوم)
     function getDaysLeftInHijriMonthInclusive() {
       const today = new Date();
       const hNow = getHijriParts(today);
 
-      let temp = new Date(today);
-      let daysUntilMonthEnds = 0;
+      let d = new Date(today);
+      let count = 1; // شامل اليوم
 
-      // نمشي يوم يوم لين يتغير الشهر الهجري
+      // نمشي يوم بيوم لين نوصل لليوم 1 من الشهر الهجري اللي بعده
       while (true) {
-        temp.setDate(temp.getDate() + 1);
-        const hTemp = getHijriParts(temp);
+        d.setDate(d.getDate() + 1);
+        const h = getHijriParts(d);
 
-        if (hTemp.month !== hNow.month || hTemp.year !== hNow.year) break;
+        // بداية شهر هجري جديد
+        if (h.day === 1 && (h.month !== hNow.month || h.year !== hNow.year)) {
+          break;
+        }
 
-        daysUntilMonthEnds++;
-        if (daysUntilMonthEnds > 40) break; // حماية
+        count++;
+
+        // حماية من اللوب لو صار شيء غريب
+        if (count > 35) break;
       }
 
-      return daysUntilMonthEnds + 1; // شامل اليوم
+      return count;
     }
 
     function calculatePlan() {
@@ -202,11 +202,10 @@
       result.textContent =
         "📘 الصفحات المتبقية: " + remaining + "\n" +
         "📅 الأيام المتبقية من شهر " + monthName + " (هجري): " + daysLeft + "\n" +
-        "📖 اقرأ يومياً: " + perDay + " صفحة\n" +
-        "✅ لتختم قبل نهاية الشهر الهجري";
+        "📖 لازم تقرأ يومياً: " + perDay + " صفحة\n" +
+        "✅ عشان تختم قبل نهاية الشهر الهجري";
     }
 
-    // تشغيل التحديث
     updateHeader();
     setInterval(updateHeader, 1000);
   </script>
