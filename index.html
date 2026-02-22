@@ -293,8 +293,17 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="card">
+  <div class="card">
 
+<!-- 👇 الصقه هنا -->
+<div style="margin-bottom:15px;">
+  <select id="pageSelect" onchange="switchPage()" 
+    style="width:100%; padding:14px; border-radius:18px; font-size:18px; font-weight:700;">
+    <option value="quran">📖 برنامج ختم القرآن</option>
+    <option value="calendar">🇸🇦 تقويم السعودية</option>
+  </select>
+</div>
+<div id="quranPage">
       <div class="title">برنامج ختم القرآن <span class="emoji">📖</span></div>
       <div class="sub" id="hijriDate">—</div>
       <div class="time" id="clock">—</div>
@@ -580,6 +589,7 @@
 
     // يحدث الدعاء إذا تغير اليوم
     setInterval(updateDailyDua, 60 * 1000);
+    </div>
   </script>
 </body>
 </html>
