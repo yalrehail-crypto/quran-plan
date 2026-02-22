@@ -23,19 +23,31 @@ body{
     margin:auto;
 }
 
-h1{
-    margin-bottom:10px;
+input,button{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    border-radius:8px;
+    border:none;
+    font-size:16px;
+}
+
+button{
+    background:#2563eb;
+    color:white;
+    cursor:pointer;
+}
+
+.result{
+    margin-top:10px;
+    font-size:18px;
+    color:#4da6ff;
 }
 
 .info{
-    margin:10px 0;
-    font-size:18px;
-}
-
-.time{
-    font-size:20px;
-    margin-top:5px;
-    color:#4da6ff;
+    margin:6px 0;
+    font-size:16px;
+    color:#ccc;
 }
 </style>
 </head>
@@ -43,38 +55,34 @@ h1{
 <body>
 
 <div class="card">
-    <h1>📖 برنامج ختم القرآن</h1>
+    <h2>📖 برنامج ختم القرآن</h2>
 
-    <div class="info">
-        📅 التاريخ: <span id="date"></span>
-    </div>
+    <div class="info">📅 <span id="date"></span></div>
+    <div class="info">🕒 <span id="time"></span></div>
+    <div class="info">🌙 اليوم من رمضان: <span id="ramadanDay"></span></div>
 
-    <div class="info">
-        🕒 الوقت: <span id="time"></span>
-    </div>
+    <hr style="margin:15px 0; opacity:0.2;">
 
-    <div class="info">
-        🌙 اليوم من رمضان: <span id="ramadanDay"></span>
-    </div>
+    <input type="number" id="totalPages" placeholder="عدد صفحات القرآن (مثلاً 604)">
+    <input type="number" id="daysLeft" placeholder="عدد الأيام المتبقية">
+
+    <button onclick="calculate()">احسب الخطة</button>
+
+    <div class="result" id="result"></div>
 </div>
 
 <script>
 function updateDateTime() {
     const now = new Date();
 
-    // عرض التاريخ الميلادي
-    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById("date").innerText =
-        now.toLocaleDateString('ar-SA', dateOptions);
+        now.toLocaleDateString('ar-SA', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
 
-    // عرض الوقت
     document.getElementById("time").innerText =
         now.toLocaleTimeString('ar-SA');
 }
 
-// حساب يوم رمضان
 function calculateRamadanDay() {
-    // عدل التاريخ هنا حسب بداية رمضان هذه السنة
     const ramadanStart = new Date("2025-03-01"); 
     const today = new Date();
 
@@ -88,9 +96,23 @@ function calculateRamadanDay() {
     }
 }
 
+function calculate(){
+    const pages = document.getElementById("totalPages").value;
+    const days = document.getElementById("daysLeft").value;
+
+    if(pages && days){
+        const perDay = Math.ceil(pages / days);
+        document.getElementById("result").innerText =
+            "📘 اقرأ يومياً: " + perDay + " صفحة";
+    }else{
+        document.getElementById("result").innerText =
+            "الرجاء إدخال القيم بشكل صحيح";
+    }
+}
+
 updateDateTime();
 calculateRamadanDay();
-setInterval(updateDateTime, 1000);
+setInterval(updateDateTime,1000);
 </script>
 
 </body>
