@@ -1,180 +1,643 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مكتبتي</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>مكتبتي</title>
 
-<style>
-:root{
-  --bg:#081426;
-  --card:#0f2140cc;
-  --text:#fff;
-  --accent:#3f66ff;
-  --accent2:#2b4dd6;
-  --radius:22px;
-}
-*{box-sizing:border-box;}
-body{
-  margin:0;
-  font-family:system-ui;
-  background: radial-gradient(circle at top,#143261,#050b14);
-  color:var(--text);
-  padding:20px;
-}
-.container{
-  max-width:1000px;
-  margin:auto;
-}
-h1{
-  text-align:center;
-  font-size:32px;
-  margin-bottom:20px;
-}
+  <style>
+    :root{
+      --bg:#081426;
+      --card:#0f2140cc;
+      --card2:#0c1b34cc;
+      --text:#ffffff;
+      --muted:#b9c6df;
+      --muted2:#93a4c6;
+      --accent:#3f66ff;
+      --accent2:#2b4dd6;
+      --shadow: 0 20px 50px rgba(0,0,0,.35);
+      --radius: 26px;
+      --line: rgba(255,255,255,.10);
+    }
 
-.cats{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-  margin-bottom:25px;
-}
-.cat{
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.15);
-  padding:14px;
-  border-radius:var(--radius);
-  font-weight:bold;
-  cursor:pointer;
-  transition:.2s;
-}
-.cat:hover{
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-}
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 50% -200px, #143261 0%, var(--bg) 55%, #050b14 100%);
+      color:var(--text);
+      min-height:100vh;
+      padding:24px 14px 70px;
+    }
 
-.search{
-  width:100%;
-  padding:15px;
-  border-radius:20px;
-  border:none;
-  margin-bottom:25px;
-  font-size:16px;
-}
+    .wrap{ width:min(980px, 100%); margin:0 auto; }
 
-.books{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:20px;
-}
+    .card{
+      background: linear-gradient(180deg, rgba(14,33,70,.95), rgba(10,22,45,.92));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px 16px 18px;
+      overflow:hidden;
+    }
 
-.book{
-  background:var(--card);
-  padding:15px;
-  border-radius:var(--radius);
-  text-align:center;
-  transition:.2s;
-}
-.book:hover{
-  transform:translateY(-5px);
-}
-.book img{
-  width:100%;
-  height:260px;
-  object-fit:cover;
-  border-radius:14px;
-  margin-bottom:10px;
-}
-.book h3{
-  margin:5px 0;
-  font-size:16px;
-}
-.book p{
-  font-size:14px;
-  opacity:.7;
-}
-.book a{
-  display:inline-block;
-  margin-top:10px;
-  padding:8px 14px;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#fff;
-  text-decoration:none;
-  border-radius:14px;
-  font-size:14px;
-}
-</style>
+    .topBar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .title{
+      font-weight: 950;
+      font-size: clamp(26px, 4.5vw, 44px);
+      margin:0;
+      letter-spacing:.3px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .title .emoji{ font-size:.9em; }
+
+    .nav{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-start;
+    }
+    .nav a{
+      text-decoration:none;
+      color:var(--text);
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      padding:12px 14px;
+      border-radius: 18px;
+      font-weight: 900;
+      font-size: 16px;
+    }
+    .nav a.active{
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      border-color: transparent;
+      box-shadow: 0 14px 35px rgba(63,102,255,.30);
+    }
+
+    hr.sep{
+      border:none;
+      height:1px;
+      background: rgba(255,255,255,.12);
+      margin: 16px 0 16px;
+    }
+
+    .searchRow{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .search{
+      flex:1;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background: rgba(255,255,255,.92);
+      border-radius: 22px;
+      padding: 14px 14px;
+      border: 1px solid rgba(0,0,0,.06);
+      box-shadow: inset 0 2px 0 rgba(0,0,0,.05);
+    }
+    .search input{
+      border:none;
+      outline:none;
+      background: transparent;
+      width:100%;
+      font-size: 18px;
+      font-weight: 800;
+      color:#0b1220;
+      text-align:right;
+    }
+    .searchIcon{
+      width:34px;
+      height:34px;
+      border-radius: 14px;
+      display:grid;
+      place-items:center;
+      background: rgba(15,33,64,.10);
+      color:#0b1220;
+      font-weight:900;
+      flex:0 0 auto;
+    }
+
+    .hint{
+      margin-top: 10px;
+      color: rgba(255,255,255,.60);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .catsTitleRow{
+      margin-top: 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .catsTitle{
+      margin:0;
+      font-size: 20px;
+      font-weight: 950;
+      color:#e9f1ff;
+    }
+    .smallMuted{
+      color: rgba(255,255,255,.55);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .catsGrid{
+      margin-top: 12px;
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 10px;
+    }
+
+    .catBtn{
+      border:none;
+      cursor:pointer;
+      text-align:right;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      padding: 14px 14px;
+      border-radius: 18px;
+      color:var(--text);
+      font-weight: 950;
+      font-size: 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      transition: transform .06s ease;
+    }
+    .catBtn:active{ transform: scale(.99); }
+    .catBtn.active{
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      border-color: transparent;
+      box-shadow: 0 14px 35px rgba(63,102,255,.30);
+    }
+    .catLeft{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .catEmoji{ font-size: 20px; }
+    .catName{
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .catCount{
+      opacity:.75;
+      font-weight: 900;
+      font-size: 13px;
+      flex: 0 0 auto;
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.10);
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+    .catBtn.active .catCount{
+      background: rgba(255,255,255,.18);
+    }
+
+    .booksHeader{
+      margin-top: 18px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap:wrap;
+    }
+    .booksHeader h2{
+      margin:0;
+      font-size: 26px;
+      font-weight: 950;
+    }
+    .booksHeader .sub{
+      margin:0;
+      color: rgba(255,255,255,.60);
+      font-weight: 700;
+      font-size: 14px;
+      line-height:1.6;
+    }
+
+    .booksGrid{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 12px;
+    }
+
+    .bookCard{
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 22px;
+      overflow:hidden;
+      box-shadow: 0 16px 40px rgba(0,0,0,.18);
+    }
+
+    .cover{
+      aspect-ratio: 4 / 3;
+      background: radial-gradient(600px 220px at 50% 0%, rgba(63,102,255,.20), rgba(255,255,255,.02));
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display:grid;
+      place-items:center;
+      padding: 10px;
+    }
+    .cover img{
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 14px;
+      object-fit: cover;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.12);
+    }
+
+    .bookBody{
+      padding: 12px 12px 14px;
+      text-align:right;
+    }
+    .bookTitle{
+      margin:0;
+      font-size: 18px;
+      font-weight: 950;
+      color:#f0f6ff;
+      line-height: 1.5;
+    }
+    .bookAuthor{
+      margin: 6px 0 0;
+      color: rgba(255,255,255,.65);
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .bookMeta{
+      margin-top: 10px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .tag{
+      font-size: 12px;
+      font-weight: 900;
+      color: rgba(255,255,255,.85);
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+
+    .btnRow{
+      margin-top: 12px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:flex-start;
+      flex-wrap:wrap;
+    }
+    .btn{
+      border:none;
+      cursor:pointer;
+      padding: 12px 14px;
+      border-radius: 16px;
+      font-weight: 950;
+      font-size: 15px;
+      color:#fff;
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      box-shadow: 0 14px 35px rgba(63,102,255,.28);
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+    }
+    .btn.secondary{
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:none;
+    }
+
+    .empty{
+      margin-top: 14px;
+      background: rgba(255,255,255,.04);
+      border:1px dashed rgba(255,255,255,.16);
+      padding: 18px 14px;
+      border-radius: 22px;
+      color: rgba(255,255,255,.70);
+      font-weight: 800;
+      line-height: 1.9;
+      text-align:center;
+    }
+
+    .footer{
+      margin-top: 16px;
+      text-align:center;
+      color: rgba(255,255,255,.55);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    @media (min-width: 820px){
+      .catsGrid{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+      .booksGrid{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+    }
+
+    @media (max-width: 420px){
+      .nav a{ font-size:15px; padding: 11px 12px; }
+      .booksGrid{ grid-template-columns: 1fr; }
+      .catsGrid{ grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="wrap">
+    <div class="card">
 
-<div class="container">
+      <div class="topBar">
+        <h1 class="title"><span class="emoji">📚</span> مكتبتي</h1>
 
-<h1>📚 مكتبتي</h1>
+        <!-- تنقّل بين صفحات مشروعك -->
+        <div class="nav">
+          <a href="index.html">الرئيسية</a>
+          <a href="quran.html">ختم القرآن</a>
+          <a href="calendar.html">تقويم السعودية</a>
+          <a class="active" href="library.html">مكتبتي</a>
+        </div>
+      </div>
 
-<input class="search" placeholder="ابحث عن كتاب..." onkeyup="searchBooks(this.value)">
+      <hr class="sep">
 
-<div class="cats">
-  <button class="cat" onclick="filterBooks('all')">📚 جميع الكتب</button>
-  <button class="cat" onclick="filterBooks('novels')">📖 الروايات والقصص</button>
-  <button class="cat" onclick="filterBooks('islamic')">🕋 المكتبة الإسلامية</button>
-  <button class="cat" onclick="filterBooks('literature')">📜 الأدب والشعر</button>
-  <button class="cat" onclick="filterBooks('philosophy')">🧠 الفكر والفلسفة</button>
-  <button class="cat" onclick="filterBooks('psychology')">👥 علم النفس والمجتمع</button>
-  <button class="cat" onclick="filterBooks('business')">💼 إدارة الأعمال</button>
-  <button class="cat" onclick="filterBooks('development')">📊 التنمية البشرية</button>
-  <button class="cat" onclick="filterBooks('engineering')">⚙️ المكتبة الهندسية</button>
-  <button class="cat" onclick="filterBooks('medical')">❤️ المكتبة الطبية</button>
-  <button class="cat" onclick="filterBooks('science')">🧬 الكتب العلمية</button>
-  <button class="cat" onclick="filterBooks('tech')">💻 التقنية والبرمجة</button>
-</div>
+      <div class="searchRow">
+        <div class="search">
+          <div class="searchIcon">🔎</div>
+          <input id="searchInput" placeholder="ابحث عن كتاب (عنوان/مؤلف)..." />
+        </div>
+      </div>
+      <div class="hint">💡 تقدر تبحث بأي كلمة… والكتب تتفلتر مباشرة.</div>
 
-<div class="books" id="booksContainer">
+      <div class="catsTitleRow">
+        <h2 class="catsTitle">الأقسام</h2>
+        <div class="smallMuted" id="countsText">—</div>
+      </div>
 
-<!-- مثال كتب -->
+      <div class="catsGrid" id="catsGrid"></div>
 
-<div class="book" data-category="islamic">
-  <img src="https://via.placeholder.com/200x260">
-  <h3>رياض الصالحين</h3>
-  <p>الإمام النووي</p>
-  <a href="#" target="_blank">قراءة PDF</a>
-</div>
+      <div class="booksHeader">
+        <div>
+          <h2 id="booksTitle">الكتب</h2>
+          <p class="sub" id="booksSub">اختر قسم لعرض الكتب.</p>
+        </div>
+      </div>
 
-<div class="book" data-category="novels">
-  <img src="https://via.placeholder.com/200x260">
-  <h3>رواية تجريبية</h3>
-  <p>كاتب مجهول</p>
-  <a href="#" target="_blank">قراءة PDF</a>
-</div>
+      <div class="booksGrid" id="booksGrid"></div>
+      <div class="empty" id="emptyBox" style="display:none;"></div>
 
-<div class="book" data-category="tech">
-  <img src="https://via.placeholder.com/200x260">
-  <h3>تعلم البرمجة</h3>
-  <p>مؤلف تقني</p>
-  <a href="#" target="_blank">قراءة PDF</a>
-</div>
+      <div class="footer">مع تحيات: المبرمج راعي المدبله 🔥💻</div>
+    </div>
+  </div>
 
-</div>
-</div>
+  <script>
+    /**
+     * ✅ كيف تضيف كتب؟
+     * 1) أنشئ مجلد داخل مشروعك اسمه: pdfs
+     * 2) ارفع ملفات PDF داخله
+     * 3) عدّل قيمة pdf في القائمة تحت لتطابق المسار:
+     *    مثال: "pdfs/riyad-alsalihin.pdf"
+     *
+     * ✅ كيف تضيف غلاف؟
+     * - حط صورة داخل مجلد: covers
+     * - ثم: cover: "covers/book.jpg"
+     */
 
-<script>
-function filterBooks(category){
-  const books=document.querySelectorAll('.book');
-  books.forEach(book=>{
-    if(category==='all'){
-      book.style.display='block';
-    }else{
-      book.style.display=book.dataset.category===category?'block':'none';
+    const CATEGORIES = [
+      { id:"follow",   name:"تابعني", emoji:"🔔" },
+      { id:"ads",      name:"أعلن لدينا", emoji:"🛍️" },
+      { id:"variety",  name:"مكتبة المنوعات", emoji:"💛" },
+      { id:"stories",  name:"الروايات والقصص", emoji:"📚" },
+      { id:"lit",      name:"الأدب والشعر", emoji:"📜" },
+      { id:"islamic",  name:"المكتبة الإسلامية", emoji:"🕋" },
+      { id:"philo",    name:"الفكر والفلسفة", emoji:"🧠" },
+      { id:"soc",      name:"علم النفس والمجتمع", emoji:"👥" },
+      { id:"biz",      name:"إدارة الأعمال", emoji:"📘" },
+      { id:"dev",      name:"التنمية البشرية", emoji:"📊" },
+      { id:"eng",      name:"المكتبة الهندسية", emoji:"⚙️" },
+      { id:"med",      name:"المكتبة الطبية", emoji:"🫀" },
+      { id:"science",  name:"الكتب العلمية", emoji:"🧬" },
+      { id:"tech",     name:"التقنية والبرمجة", emoji:"💻" },
+    ];
+
+    // ⬇️ كتب تجريبية (غيّرها حسب ملفاتك)
+    // ملاحظة: هذه مجرد أمثلة، لازم ترفع ملفاتك أنت داخل pdfs/
+    const BOOKS = [
+      { id:1,  cat:"islamic", title:"رياض الصالحين", author:"الإمام النووي", pdf:"pdfs/riyad-alsalihin.pdf", cover:"covers/riyad.jpg", tags:["إسلامي","حديث"] },
+      { id:2,  cat:"stories", title:"رواية تجريبية", author:"—", pdf:"pdfs/story-sample.pdf", cover:"covers/story.jpg", tags:["روايات"] },
+      { id:3,  cat:"lit",     title:"ديوان تجريبي", author:"—", pdf:"pdfs/diwan-sample.pdf", cover:"covers/poem.jpg", tags:["شعر"] },
+      { id:4,  cat:"philo",   title:"مدخل للفلسفة (ملف تجريبي)", author:"—", pdf:"pdfs/philo-sample.pdf", cover:"covers/philo.jpg", tags:["فلسفة"] },
+      { id:5,  cat:"biz",     title:"إدارة الوقت (ملف تجريبي)", author:"—", pdf:"pdfs/time-management.pdf", cover:"covers/biz.jpg", tags:["إدارة","تطوير"] },
+      { id:6,  cat:"tech",    title:"مقدمة في البرمجة (ملف تجريبي)", author:"—", pdf:"pdfs/programming.pdf", cover:"covers/tech.jpg", tags:["برمجة"] },
+      { id:7,  cat:"science", title:"أساسيات العلوم (ملف تجريبي)", author:"—", pdf:"pdfs/science.pdf", cover:"covers/science.jpg", tags:["علوم"] },
+      { id:8,  cat:"med",     title:"مبادئ صحية (ملف تجريبي)", author:"—", pdf:"pdfs/health.pdf", cover:"covers/med.jpg", tags:["صحة"] },
+      { id:9,  cat:"eng",     title:"مفاهيم هندسية (ملف تجريبي)", author:"—", pdf:"pdfs/engineering.pdf", cover:"covers/eng.jpg", tags:["هندسة"] },
+      { id:10, cat:"soc",     title:"علم النفس (ملف تجريبي)", author:"—", pdf:"pdfs/psychology.pdf", cover:"covers/psy.jpg", tags:["نفس","مجتمع"] },
+      { id:11, cat:"dev",     title:"تطوير الذات (ملف تجريبي)", author:"—", pdf:"pdfs/self-dev.pdf", cover:"covers/dev.jpg", tags:["تنمية"] },
+      { id:12, cat:"variety", title:"منوعات (ملف تجريبي)", author:"—", pdf:"pdfs/variety.pdf", cover:"covers/variety.jpg", tags:["منوعات"] },
+
+      // أقسام “تابعني / أعلن لدينا” غالباً ما تكون روابط، هنا نخليها كتب/ملفات تعريفية
+      { id:13, cat:"follow",  title:"طرق المتابعة", author:"قنواتي وروابطي", pdf:"pdfs/follow.pdf", cover:"covers/follow.jpg", tags:["روابط"] },
+      { id:14, cat:"ads",     title:"إعلان/رعاية", author:"تفاصيل الإعلان", pdf:"pdfs/ads.pdf", cover:"covers/ads.jpg", tags:["إعلان"] },
+    ];
+
+    const state = {
+      activeCat: null,
+      q: ""
+    };
+
+    const els = {
+      catsGrid: document.getElementById("catsGrid"),
+      booksGrid: document.getElementById("booksGrid"),
+      searchInput: document.getElementById("searchInput"),
+      booksTitle: document.getElementById("booksTitle"),
+      booksSub: document.getElementById("booksSub"),
+      emptyBox: document.getElementById("emptyBox"),
+      countsText: document.getElementById("countsText"),
+    };
+
+    function safeText(s){ return String(s ?? ""); }
+
+    function countBooksByCat(catId){
+      return BOOKS.filter(b => b.cat === catId).length;
     }
-  });
-}
 
-function searchBooks(text){
-  const books=document.querySelectorAll('.book');
-  books.forEach(book=>{
-    const title=book.innerText.toLowerCase();
-    book.style.display=title.includes(text.toLowerCase())?'block':'none';
-  });
-}
-</script>
+    function renderCategories(){
+      els.catsGrid.innerHTML = "";
 
+      // إجمالي
+      els.countsText.textContent = `إجمالي الكتب: ${BOOKS.length}`;
+
+      CATEGORIES.forEach(cat => {
+        const btn = document.createElement("button");
+        btn.className = "catBtn" + (state.activeCat === cat.id ? " active" : "");
+        const c = countBooksByCat(cat.id);
+
+        btn.innerHTML = `
+          <div class="catLeft">
+            <div class="catEmoji">${cat.emoji}</div>
+            <div class="catName">${safeText(cat.name)}</div>
+          </div>
+          <div class="catCount">${c}</div>
+        `;
+
+        btn.addEventListener("click", ()=>{
+          state.activeCat = cat.id;
+          renderCategories();
+          renderBooks();
+          // نزّل المستخدم لقسم الكتب بعد اختيار القسم (لطيف للجوال)
+          document.getElementById("booksTitle").scrollIntoView({behavior:"smooth", block:"start"});
+        });
+
+        els.catsGrid.appendChild(btn);
+      });
+    }
+
+    function matchesSearch(book){
+      const q = state.q.trim().toLowerCase();
+      if(!q) return true;
+      const t = (book.title || "").toLowerCase();
+      const a = (book.author || "").toLowerCase();
+      return t.includes(q) || a.includes(q);
+    }
+
+    function renderBooks(){
+      els.booksGrid.innerHTML = "";
+      els.emptyBox.style.display = "none";
+
+      if(!state.activeCat){
+        els.booksTitle.textContent = "الكتب";
+        els.booksSub.textContent = "اختر قسم لعرض الكتب.";
+        els.emptyBox.style.display = "block";
+        els.emptyBox.innerHTML = "👆 اختر قسم من الأعلى، ثم بتظهر لك الكتب هنا.";
+        return;
+      }
+
+      const cat = CATEGORIES.find(c => c.id === state.activeCat);
+      const baseList = BOOKS.filter(b => b.cat === state.activeCat);
+      const list = baseList.filter(matchesSearch);
+
+      els.booksTitle.textContent = `الكتب — ${cat ? cat.name : ""}`;
+      els.booksSub.textContent = state.q
+        ? `نتائج البحث داخل القسم (${list.length}/${baseList.length})`
+        : `عدد الكتب في هذا القسم: ${baseList.length}`;
+
+      if(list.length === 0){
+        els.emptyBox.style.display = "block";
+        els.emptyBox.innerHTML =
+          state.q
+          ? "🔎 ما لقينا نتائج… جرّب كلمة ثانية."
+          : "📭 هذا القسم فاضي حالياً… أضف كتب (PDF) وبيظهرون هنا.";
+        return;
+      }
+
+      list.forEach(book => {
+        const card = document.createElement("div");
+        card.className = "bookCard";
+
+        const cover = safeText(book.cover) || "";
+        const pdf = safeText(book.pdf) || "#";
+        const title = safeText(book.title) || "بدون عنوان";
+        const author = safeText(book.author) || "";
+
+        const tags = Array.isArray(book.tags) ? book.tags : [];
+
+        card.innerHTML = `
+          <div class="cover">
+            <img
+              src="${cover}"
+              alt="${title}"
+              onerror="this.onerror=null;this.src='data:image/svg+xml;charset=UTF-8,${encodeURIComponent(makePlaceholderSVG(title))}'"
+            />
+          </div>
+          <div class="bookBody">
+            <h3 class="bookTitle">${title}</h3>
+            <p class="bookAuthor">${author}</p>
+
+            <div class="bookMeta">
+              ${tags.slice(0,4).map(t => `<span class="tag">${safeText(t)}</span>`).join("")}
+            </div>
+
+            <div class="btnRow">
+              <a class="btn" href="${pdf}" target="_blank" rel="noopener">قراءة PDF 📄</a>
+              <button class="btn secondary" type="button" data-copy="${pdf}">نسخ الرابط 🔗</button>
+            </div>
+          </div>
+        `;
+
+        // زر نسخ الرابط
+        card.querySelector('[data-copy]')?.addEventListener("click", async (e)=>{
+          const link = e.currentTarget.getAttribute("data-copy") || "";
+          try{
+            await navigator.clipboard.writeText(link);
+            e.currentTarget.textContent = "تم النسخ ✅";
+            setTimeout(()=> e.currentTarget.textContent = "نسخ الرابط 🔗", 1200);
+          }catch(err){
+            alert("ما قدرت أنسخ الرابط على هذا الجهاز. انسخه يدويًا:\n" + link);
+          }
+        });
+
+        els.booksGrid.appendChild(card);
+      });
+    }
+
+    // placeholder SVG للغلاف إذا الصورة ما اشتغلت
+    function makePlaceholderSVG(title){
+      const t = (title || "").slice(0, 18);
+      return `
+        <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#1b3a78"/>
+              <stop offset="1" stop-color="#0b1630"/>
+            </linearGradient>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#g)"/>
+          <rect x="32" y="32" width="736" height="536" rx="28" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)"/>
+          <text x="50%" y="52%" dominant-baseline="middle" text-anchor="middle"
+                font-family="Tahoma, Arial" font-size="44" fill="rgba(255,255,255,0.85)">
+            ${escapeXml(t)}
+          </text>
+          <text x="50%" y="62%" dominant-baseline="middle" text-anchor="middle"
+                font-family="Tahoma, Arial" font-size="22" fill="rgba(255,255,255,0.55)">
+            غلاف غير متوفر
+          </text>
+        </svg>
+      `.trim();
+    }
+
+    function escapeXml(unsafe){
+      return String(unsafe).replace(/[<>&'"]/g, (c)=>({
+        "<":"&lt;", ">":"&gt;", "&":"&amp;", "'":"&apos;", '"':"&quot;"
+      }[c]));
+    }
+
+    // البحث
+    els.searchInput.addEventListener("input", (e)=>{
+      state.q = e.target.value || "";
+      renderBooks();
+    });
+
+    // تشغيل أولي
+    renderCategories();
+    renderBooks();
+  </script>
 </body>
 </html>
