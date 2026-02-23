@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>تقويم السعودية</title>
+
+  <style>
+    :root{
+      --bg:#081426;
+      --card:#0f2140cc;
+      --text:#ffffff;
+      --muted:#b9c6df;
+      --shadow: 0 20px 50px rgba(0,0,0,.35);
+      --radius: 26px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 50% -200px, #143261 0%, var(--bg) 55%, #050b14 100%);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      padding:22px 14px 60px;
+    }
+
+    .wrap{ width:min(760px, 100%); }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .back{
+      text-decoration:none;
+      color:white;
+      font-weight:900;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      padding:10px 14px;
+      border-radius:14px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .title{
+      text-align:center;
+      flex:1;
+      font-weight:900;
+      font-size: clamp(26px, 5vw, 40px);
+      margin:0;
+    }
+
+    .sub{
+      text-align:center;
+      color:var(--muted);
+      font-size: clamp(14px, 2.4vw, 18px);
+      margin: 6px 0 0;
+      line-height:1.7;
+    }
+
+    .time{
+      text-align:center;
+      color:var(--muted);
+      font-size: clamp(14px, 2.4vw, 18px);
+      margin: 6px 0 16px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:14px;
+      margin-top:16px;
+    }
+
+    .tile{
+      border-radius:22px;
+      padding:18px 14px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: var(--shadow);
+      cursor:pointer;
+      min-height:108px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      font-weight:900;
+      font-size: clamp(18px, 3.2vw, 26px);
+      line-height:1.35;
+      position:relative;
+      overflow:hidden;
+    }
+
+    /* زخرفة خفيفة مثل الصورة */
+    .tile::before{
+      content:"";
+      position:absolute;
+      inset:-40px -40px auto auto;
+      width:160px;
+      height:160px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.22), rgba(255,255,255,0) 65%);
+      transform: rotate(15deg);
+      pointer-events:none;
+    }
+
+    .tile.blue{ background: linear-gradient(135deg, rgba(60,110,255,.25), rgba(255,255,255,.06)); }
+    .tile.green{ background: linear-gradient(135deg, rgba(40,180,120,.22), rgba(255,255,255,.06)); }
+    .tile.gold{ background: linear-gradient(135deg, rgba(220,170,60,.22), rgba(255,255,255,.06)); }
+    .tile.teal{ background: linear-gradient(135deg, rgba(40,200,200,.20), rgba(255,255,255,.06)); }
+
+    /* ====== Popup ====== */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:99;
+    }
+
+    .modal{
+      width:min(720px, 100%);
+      border-radius: 26px;
+      background: linear-gradient(180deg, rgba(14,33,70,.95), rgba(10,22,45,.95));
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .modalHead{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:14px 14px 10px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      gap:10px;
+    }
+
+    .modalTitle{
+      margin:0;
+      font-size:22px;
+      font-weight:900;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .closeBtn{
+      border:none;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.12);
+      color:white;
+      font-weight:900;
+      padding:10px 14px;
+      border-radius:14px;
+      cursor:pointer;
+      flex:0 0 auto;
+    }
+
+    .modalBody{
+      padding:14px;
+    }
+
+    .list{
+      display:grid;
+      gap:12px;
+    }
+
+    .item{
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      padding:14px 14px;
+    }
+
+    .itemTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      font-weight:900;
+      font-size:18px;
+      line-height:1.5;
+    }
+
+    .dates{
+      margin-top:8px;
+      color: rgba(255,255,255,.80);
+      font-size:15px;
+      line-height:1.9;
+      font-weight:700;
+      word-break: break-word;
+    }
+
+    .badge{
+      font-size:14px;
+      font-weight:900;
+      padding:6px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
+      white-space:nowrap;
+    }
+
+    @media (max-width: 430px){
+      .grid{ grid-template-columns: 1fr; }
+      .tile{ min-height:96px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <div class="topbar">
+      <a class="back" href="index.html">⬅️ رجوع</a>
+      <h1 class="title">🇸🇦 تقويم السعودية</h1>
+      <div style="width:88px"></div>
+    </div>
+
+    <div class="sub" id="hijriDate">—</div>
+    <div class="time" id="clock">—</div>
+
+    <div class="grid">
+      <div class="tile blue"  data-page="school">التقويم الدراسي</div>
+      <div class="tile green" data-page="salary">موعد الرواتب</div>
+      <div class="tile gold"  data-page="pension">رواتب المتقاعدين</div>
+      <div class="tile green" data-page="citizen">حساب المواطن</div>
+      <div class="tile teal"  data-page="dual">التقويم الهجري والميلادي</div>
+      <div class="tile gold"  data-page="gosi">الضمان الاجتماعي</div>
+    </div>
+
+  </div>
+
+  <!-- Popup -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <div class="modalHead">
+        <h2 class="modalTitle" id="modalTitle">—</h2>
+        <button class="closeBtn" id="closeBtn">إغلاق</button>
+      </div>
+      <div class="modalBody">
+        <div class="list" id="modalList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ====== التاريخ والوقت ======
+    function getHijriText(now){
+      try{
+        return new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura", {
+          weekday:"long", day:"numeric", month:"long", year:"numeric"
+        }).format(now);
+      }catch(e){
+        return new Intl.DateTimeFormat("ar-SA-u-ca-islamic", {
+          weekday:"long", day:"numeric", month:"long", year:"numeric"
+        }).format(now);
+      }
+    }
+
+    function updateDateTime(){
+      const now = new Date();
+
+      const timeStr = new Intl.DateTimeFormat("ar-SA", {
+        hour:"numeric", minute:"2-digit", second:"2-digit"
+      }).format(now);
+
+      const hijriText = getHijriText(now);
+
+      document.getElementById("clock").textContent = `⏰ ${timeStr}`;
+      document.getElementById("hijriDate").textContent = `📅 ${hijriText}`;
+    }
+
+    // ====== بيانات (مؤقتة) ======
+    // تقدر تغيرها أو نربطها بجلب من الموقع لاحقاً
+    const DATA = {
+      salary: {
+        title: "💰 موعد الرواتب",
+        items: [
+          { name: "راتب فبراير", hijri: "1447/9/9", greg: "2026/2/26", badge:"المدني" },
+          { name: "راتب مارس",   hijri: "1447/10/7", greg: "2026/3/26", badge:"المدني" },
+          { name: "راتب أبريل",  hijri: "1447/11/10", greg:"2026/4/27", badge:"المدني" },
+          { name: "راتب مايو",   hijri: "1447/12/7", greg: "2026/5/24", badge:"المدني" },
+          { name: "راتب يونيو",  hijri: "1448/1/13", greg:"2026/6/28", badge:"المدني" }
+        ]
+      },
+      pension: {
+        title: "👴 رواتب المتقاعدين",
+        items: [
+          { name:"راتب هذا الشهر", hijri:"—", greg:"—", badge:"مؤسسة التقاعد" },
+          { name:"راتب الشهر القادم", hijri:"—", greg:"—", badge:"مؤسسة التقاعد" }
+        ]
+      },
+      citizen: {
+        title: "🏡 حساب المواطن",
+        items: [
+          { name:"إيداع الدفعة القادمة", hijri:"—", greg:"—", badge:"الدعم" }
+        ]
+      },
+      school: {
+        title: "🏫 التقويم الدراسي",
+        items: [
+          { name:"بداية الفصل القادم", hijri:"—", greg:"—", badge:"تعليم" },
+          { name:"إجازة قادمة", hijri:"—", greg:"—", badge:"تعليم" }
+        ]
+      },
+      gosi: {
+        title: "🧾 الضمان الاجتماعي",
+        items: [
+          { name:"موعد الصرف القادم", hijri:"—", greg:"—", badge:"الضمان" }
+        ]
+      },
+      dual: {
+        title: "📅 التقويم الهجري والميلادي",
+        items: [
+          { name:"تاريخ اليوم", hijri:"(يعرض أعلى الصفحة)", greg:"(يعرض أعلى الصفحة)", badge:"اليوم" }
+        ]
+      }
+    };
+
+    // ====== Popup فتح/إغلاق ======
+    const overlay = document.getElementById("overlay");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalList = document.getElementById("modalList");
+    const closeBtn = document.getElementById("closeBtn");
+
+    function openModal(key){
+      const page = DATA[key];
+      if(!page) return;
+
+      modalTitle.textContent = page.title;
+      modalList.innerHTML = "";
+
+      page.items.forEach((it)=>{
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `
+          <div class="itemTop">
+            <span>${it.name}</span>
+            <span class="badge">${it.badge || ""}</span>
+          </div>
+          <div class="dates">
+            📅 هجري: <b>${it.hijri}</b><br>
+            🗓️ ميلادي: <b>${it.greg}</b>
+          </div>
+        `;
+        modalList.appendChild(div);
+      });
+
+      overlay.style.display = "flex";
+    }
+
+    function closeModal(){
+      overlay.style.display = "none";
+    }
+
+    closeBtn.addEventListener("click", closeModal);
+    overlay.addEventListener("click", (e)=>{
+      if(e.target === overlay) closeModal();
+    });
+
+    document.querySelectorAll(".tile").forEach((t)=>{
+      t.addEventListener("click", ()=>{
+        openModal(t.dataset.page);
+      });
+    });
+
+    // تشغيل
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+  </script>
+</body>
+</html>
