@@ -4,23 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>تقويم السعودية</title>
-
   <style>
     :root{
       --bg:#081426;
       --card:#0f2140cc;
+      --card2:#0c1b34cc;
       --text:#ffffff;
       --muted:#b9c6df;
       --muted2:#93a4c6;
+      --accent:#3f66ff;
+      --accent2:#2b4dd6;
       --shadow: 0 20px 50px rgba(0,0,0,.35);
       --radius: 26px;
-
-      --tileRadius: 22px;
-      --tileBorder: 1px solid rgba(255,255,255,.10);
+      --border: rgba(255,255,255,.10);
     }
 
     *{ box-sizing:border-box; }
-
     body{
       margin:0;
       font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
@@ -40,200 +39,232 @@
       border: 1px solid rgba(255,255,255,.08);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 22px 16px 18px;
+      padding: 22px 18px 18px;
       overflow:hidden;
     }
 
-    .header{
-      text-align:center;
-      padding: 8px 8px 10px;
-    }
     .title{
-      font-weight: 1000;
-      letter-spacing: .3px;
-      font-size: clamp(34px, 6vw, 56px);
-      margin: 8px 0 6px;
-      line-height: 1.15;
-      word-break: keep-all;
+      text-align:center;
+      font-weight:900;
+      letter-spacing:.5px;
+      font-size: clamp(30px, 5.2vw, 54px);
+      margin: 4px 0 6px;
     }
     .sub{
-      color: var(--muted);
-      font-size: clamp(16px, 2.4vw, 20px);
+      text-align:center;
+      color:var(--muted);
+      font-size: clamp(15px, 2.2vw, 19px);
+      line-height:1.7;
       margin: 0 0 6px;
-      line-height: 1.7;
     }
     .time{
-      color: var(--muted2);
+      text-align:center;
+      color:var(--muted);
       font-size: clamp(16px, 2.4vw, 20px);
-      margin: 4px 0 0;
+      margin: 6px 0 14px;
     }
 
     hr.sep{
       border:none;
       height:1px;
       background: rgba(255,255,255,.12);
-      margin: 14px 0 16px;
+      margin: 14px 0 18px;
     }
 
-    /* Grid Tiles (مثل الصورة) */
+    /* ===== الشبكة (مثل الصورة) ===== */
     .grid{
       display:grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      margin-top: 10px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
     }
 
     .tile{
-      border: var(--tileBorder);
-      border-radius: var(--tileRadius);
-      overflow:hidden;
       position:relative;
-      cursor:pointer;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      padding: 22px 14px;
       min-height: 92px;
-      padding: 18px 16px;
+      cursor:pointer;
+      overflow:hidden;
       display:flex;
       align-items:center;
       justify-content:center;
       text-align:center;
       font-weight: 1000;
-      font-size: clamp(18px, 2.8vw, 28px);
-      line-height: 1.25;
+      font-size: clamp(18px, 3.3vw, 30px);
+      color: rgba(255,255,255,.92);
+      letter-spacing:.2px;
       user-select:none;
-
-      /* حل مشكلة “الكلام متشبك” */
-      white-space: normal;
-      word-break: keep-all;
-      hyphens: none;
+      transition: transform .08s ease, filter .12s ease;
     }
+    .tile:active{ transform: scale(.99); }
 
-    .tile small{
-      display:block;
-      margin-top: 6px;
-      font-weight: 700;
-      font-size: 14px;
-      color: rgba(255,255,255,.82);
-      line-height: 1.5;
+    /* تدرجات خفيفة تشبه “الأمواج” */
+    .tile::before{
+      content:"";
+      position:absolute;
+      inset:-40px -60px auto auto;
+      width:240px;
+      height:140px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), rgba(255,255,255,0) 60%);
+      transform: rotate(10deg);
+      opacity:.55;
+      pointer-events:none;
     }
-
-    /* ألوان مثل الكروت */
-    .t1{ background: linear-gradient(135deg, rgba(65,140,255,.25), rgba(255,255,255,.06)); }
-    .t2{ background: linear-gradient(135deg, rgba(74,220,180,.22), rgba(255,255,255,.06)); }
-    .t3{ background: linear-gradient(135deg, rgba(255,200,90,.20), rgba(255,255,255,.06)); }
-    .t4{ background: linear-gradient(135deg, rgba(120,220,120,.22), rgba(255,255,255,.06)); }
-    .t5{ background: linear-gradient(135deg, rgba(255,190,200,.18), rgba(255,255,255,.06)); }
-
     .tile::after{
       content:"";
       position:absolute;
-      inset:0;
-      background: radial-gradient(500px 260px at 80% 0%, rgba(255,255,255,.14), transparent 55%);
+      inset:auto -80px -60px auto;
+      width:260px;
+      height:180px;
+      background: radial-gradient(circle at 40% 40%, rgba(255,255,255,.25), rgba(255,255,255,0) 62%);
+      transform: rotate(-12deg);
+      opacity:.45;
       pointer-events:none;
     }
 
-    /* Modal */
-    .modalBack{
+    .t1{ background: linear-gradient(135deg, rgba(44,132,255,.35), rgba(255,255,255,.06)); }
+    .t2{ background: linear-gradient(135deg, rgba(62,206,141,.28), rgba(255,255,255,.06)); }
+    .t3{ background: linear-gradient(135deg, rgba(255,196,86,.22), rgba(255,255,255,.06)); }
+    .t4{ background: linear-gradient(135deg, rgba(85,255,173,.20), rgba(255,255,255,.06)); }
+    .t5{ background: linear-gradient(135deg, rgba(255,205,120,.18), rgba(255,255,255,.06)); }
+
+    /* ===== نافذة التفاصيل ===== */
+    .overlay{
       position:fixed;
       inset:0;
-      background: rgba(0,0,0,.55);
+      background: rgba(0,0,0,.45);
       display:none;
       align-items:flex-end;
       justify-content:center;
       padding: 18px 12px;
-      z-index: 999;
+      z-index:999;
     }
-    .modal{
-      width: min(860px, 100%);
+    .overlay.show{ display:flex; }
+
+    .sheet{
+      width:min(820px, 100%);
       background: linear-gradient(180deg, rgba(14,33,70,.98), rgba(10,22,45,.98));
       border: 1px solid rgba(255,255,255,.10);
       border-radius: 22px;
-      box-shadow: var(--shadow);
+      box-shadow: 0 30px 90px rgba(0,0,0,.55);
       overflow:hidden;
-      max-height: 82vh;
-      display:flex;
-      flex-direction:column;
     }
-    .modalHead{
+
+    .sheetHead{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap: 10px;
-      padding: 14px 14px 10px;
+      padding: 14px 14px;
       border-bottom: 1px solid rgba(255,255,255,.10);
     }
-    .modalTitle{
-      font-weight: 1000;
+
+    .sheetTitle{
       font-size: 22px;
-      line-height: 1.2;
+      font-weight: 1000;
+      margin:0;
     }
+
     .closeBtn{
       border:none;
       background: rgba(255,255,255,.10);
-      color: white;
-      padding: 10px 14px;
+      color: #fff;
+      font-weight: 1000;
       border-radius: 14px;
-      font-weight: 900;
+      padding: 10px 14px;
       cursor:pointer;
     }
-    .modalBody{
-      padding: 14px;
+
+    .sheetBody{
+      padding: 14px 14px 16px;
+      max-height: 70vh;
       overflow:auto;
     }
 
+    .hint{
+      color: rgba(255,255,255,.65);
+      font-weight: 700;
+      font-size: 14px;
+      margin: 0 0 10px;
+      line-height:1.7;
+    }
+
+    /* فلاتر داخل التقويم الدراسي */
+    .filterRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin: 10px 0 12px;
+    }
+    .chipBtn{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:#fff;
+      border-radius: 999px;
+      padding: 10px 12px;
+      font-weight: 900;
+      cursor:pointer;
+      font-size: 14px;
+    }
+    .chipBtn.active{
+      border-color: rgba(63,102,255,.65);
+      box-shadow: 0 0 0 3px rgba(63,102,255,.18);
+      background: rgba(63,102,255,.20);
+    }
+
+    /* قائمة الأحداث */
     .list{
       display:grid;
-      gap: 12px;
+      gap: 10px;
     }
     .item{
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
       border-radius: 18px;
-      padding: 14px;
+      padding: 12px 12px 12px;
     }
     .itemTitle{
       font-weight: 1000;
-      font-size: 20px;
-      margin-bottom: 6px;
-      line-height: 1.3;
+      font-size: 18px;
+      margin:0 0 8px;
+      color: rgba(255,255,255,.92);
+      line-height:1.45;
     }
     .itemMeta{
       display:flex;
-      flex-wrap:wrap;
-      gap: 10px;
-      color: rgba(255,255,255,.80);
-      font-weight: 800;
-      line-height: 1.6;
+      gap: 8px;
+      flex-wrap:wrap;   /* مهم عشان ما يتشبك الكلام */
+      align-items:center;
     }
     .chip{
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.10);
-      padding: 6px 10px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: 8px 10px;
       border-radius: 14px;
-      font-size: 14px;
-    }
-
-    .imgBox{
-      border-radius: 18px;
-      overflow:hidden;
       border: 1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.25);
-    }
-    .imgBox img{
-      width:100%;
-      height:auto;
-      display:block;
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.85);
+      font-weight: 900;
+      font-size: 13px;
+      line-height:1.4;
+      white-space: nowrap;
     }
 
-    .hint{
-      color: rgba(255,255,255,.72);
-      font-weight: 700;
+    .footer{
+      margin-top: 14px;
+      text-align:center;
+      color: rgba(255,255,255,.55);
       font-size: 14px;
-      line-height: 1.7;
-      margin-top: 10px;
+      font-weight: 800;
     }
 
-    @media (max-width: 460px){
+    @media (max-width: 440px){
       .grid{ grid-template-columns: 1fr; }
-      .tile{ min-height: 86px; }
+      .tile{ min-height: 84px; }
+      .sheetBody{ max-height: 74vh; }
     }
   </style>
 </head>
@@ -241,231 +272,338 @@
 <body>
   <div class="wrap">
     <div class="card">
-
-      <div class="header">
-        <div class="sub">🇸🇦 تقويم السعودية</div>
-        <div class="title">تقويم السعودية</div>
-        <div class="sub" id="hijriDate">—</div>
-        <div class="time" id="clock">—</div>
-      </div>
+      <div class="title">تقويم السعودية 🇸🇦</div>
+      <div class="sub" id="hijriDate">—</div>
+      <div class="time" id="clock">—</div>
 
       <hr class="sep">
 
-      <!-- ✅ خيارات 1-5 -->
       <div class="grid">
-        <div class="tile t1" onclick="openModal('salary')">
-          💰 موعد الرواتب
-          <small>مواعيد صرف الرواتب القادمة</small>
-        </div>
-
-        <div class="tile t2" onclick="openModal('retire')">
-          👴 رواتب المتقاعدين
-          <small>مواعيد صرف التقاعد</small>
-        </div>
-
-        <div class="tile t3" onclick="openModal('citizen')">
-          🧾 حساب المواطن
-          <small>موعد الإيداع</small>
-        </div>
-
-        <div class="tile t4" onclick="openModal('school')">
-          🏫 التقويم الدراسي
-          <small>العام + مكة/المدينة</small>
-        </div>
-
-        <div class="tile t5" onclick="openModal('hijri')">
-          📅 التقويم الهجري والميلادي
-          <small>تحويل وعرض تاريخ اليوم</small>
-        </div>
+        <div class="tile t1" data-key="school">التقويم الدراسي</div>
+        <div class="tile t2" data-key="salaries">موعد الرواتب</div>
+        <div class="tile t3" data-key="pension">رواتب المتقاعدين</div>
+        <div class="tile t4" data-key="citizen">حساب المواطن</div>
+        <div class="tile t5" data-key="social">الضمان الاجتماعي</div>
       </div>
 
-      <div class="hint">
-        ✅ تقدر تغيّر نصوص ومواعيد الخيارات من داخل كود JavaScript تحت (قسم DATA).
-      </div>
-
+      <div class="footer">مع تحيات: المبرمج راعي المدبله 🔥💻</div>
     </div>
   </div>
 
-  <!-- Modal -->
-  <div class="modalBack" id="modalBack" onclick="closeModal(event)">
-    <div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
-      <div class="modalHead">
-        <div class="modalTitle" id="modalTitle">—</div>
-        <button class="closeBtn" onclick="closeModal()">إغلاق</button>
+  <!-- نافذة التفاصيل -->
+  <div class="overlay" id="overlay">
+    <div class="sheet">
+      <div class="sheetHead">
+        <h3 class="sheetTitle" id="sheetTitle">—</h3>
+        <button class="closeBtn" id="closeBtn">إغلاق</button>
       </div>
-      <div class="modalBody" id="modalBody"></div>
+      <div class="sheetBody" id="sheetBody"></div>
     </div>
   </div>
 
   <script>
-    // ===== التاريخ/الوقت =====
-    function getHijriText(now){
-      try{
-        return new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura", {
-          weekday: "long",
-          day: "numeric",
-          month: "long",
-          year: "numeric"
-        }).format(now);
-      }catch(e){
-        return new Intl.DateTimeFormat("ar-SA-u-ca-islamic", {
-          weekday: "long",
-          day: "numeric",
-          month: "long",
-          year: "numeric"
-        }).format(now);
-      }
-    }
-
-    function updateDateTime(){
-      const now = new Date();
-
-      const timeStr = new Intl.DateTimeFormat("ar-SA", {
-        hour: "numeric",
-        minute: "2-digit",
-        second: "2-digit"
-      }).format(now);
-
-      const hijriText = getHijriText(now);
-
-      document.getElementById("clock").textContent = `⏰ ${timeStr}`;
-      document.getElementById("hijriDate").textContent = `📅 ${hijriText}`;
-    }
-
-    // ===== DATA (عدّل هنا المواعيد) =====
-    // ملاحظة: اكتب التاريخين مثل المثال:
-    // { title: "راتب رمضان", hijri: "1447/9/9", greg: "2026/2/26" }
+    // ===== بيانات =====
     const DATA = {
-      salary: {
+      school: {
+        title: "🏫 التقويم الدراسي 1447 / 1448 (2025 / 2026)",
+        general: [
+          // (الجدول العام)
+          { title:"عودة الهيئة الإدارية والمشرفين التربويين في جميع المراحل الدراسية", greg:"2025-08-12" },
+          { title:"عودة المعلمين الممارسين للتدريس في جميع المراحل الدراسية", greg:"2025-08-17" },
+          { title:"بداية العام الدراسي", greg:"2025-08-24" },
+          { title:"إجازة اليوم الوطني", greg:"2025-09-23" },
+          { title:"إجازة إضافية", greg:"2025-10-12" },
+
+          { title:"بداية إجازة الخريف", greg:"2025-11-21" },
+          { title:"نهاية إجازة الخريف", greg:"2025-11-29" },
+
+          { title:"إجازة إضافية", greg:"2025-12-11" },
+
+          { title:"بداية إجازة منتصف العام الدراسي", greg:"2026-01-09" },
+          { title:"نهاية إجازة منتصف العام الدراسي", greg:"2026-01-17" },
+
+          { title:"إجازة يوم التأسيس", greg:"2026-02-22" },
+
+          { title:"بداية إجازة عيد الفطر", greg:"2026-03-06" },
+          { title:"نهاية إجازة عيد الفطر", greg:"2026-03-28" },
+
+          { title:"بداية إجازة عيد الأضحى", greg:"2026-05-22" },
+          { title:"نهاية إجازة عيد الأضحى", greg:"2026-06-01" },
+
+          { title:"بداية إجازة نهاية العام الدراسي", greg:"2026-06-25" },
+
+          { title:"بداية العام الدراسي 1448 - 1449 هـ", greg:"2026-08-23" }
+        ],
+        makkah: [
+          // (مكة والمدينة)
+          { title:"عودة الهيئة الإدارية والمشرفين التربويين في جميع المراحل الدراسية", greg:"2025-08-17" },
+          { title:"عودة المعلمين الممارسين للتدريس في جميع المراحل الدراسية", greg:"2025-08-24" },
+          { title:"بداية العام الدراسي (مكة/المدينة)", greg:"2025-08-31" },
+
+          { title:"إجازة اليوم الوطني", greg:"2025-09-23" },
+          { title:"إجازة إضافية", greg:"2025-10-12" },
+
+          { title:"بداية إجازة الخريف", greg:"2025-11-21" },
+          { title:"نهاية إجازة الخريف", greg:"2025-11-29" },
+
+          { title:"إجازة إضافية", greg:"2025-12-11" },
+
+          { title:"بداية إجازة منتصف العام الدراسي", greg:"2026-01-09" },
+          { title:"نهاية إجازة منتصف العام الدراسي", greg:"2026-01-17" },
+
+          { title:"إجازة يوم التأسيس", greg:"2026-02-22" },
+
+          { title:"بداية إجازة عيد الفطر", greg:"2026-03-06" },
+          { title:"نهاية إجازة عيد الفطر", greg:"2026-03-28" },
+
+          { title:"بداية إجازة عيد الأضحى", greg:"2026-05-15" },
+          { title:"نهاية إجازة عيد الأضحى", greg:"2026-06-01" },
+
+          { title:"بداية إجازة نهاية العام الدراسي (مكة/المدينة)", greg:"2026-07-02" },
+          { title:"بداية العام الدراسي 1448 - 1449 هـ (مكة/المدينة)", greg:"2026-08-30" }
+        ]
+      },
+
+      // باقي الأقسام (جاهزة نعبّيها بعدين)
+      salaries: {
         title: "💰 موعد الرواتب",
         items: [
-          { title: "راتب رمضان",     hijri: "1447/9/9",  greg: "2026/2/26" },
-          { title: "راتب شوال",      hijri: "1447/10/7", greg: "2026/3/26" },
-          { title: "راتب ذو القعدة", hijri: "1447/11/10",greg: "2026/4/27" },
-          { title: "راتب ذو الحجة",  hijri: "1447/12/7", greg: "2026/5/24" },
-          { title: "راتب محرم",      hijri: "1448/1/13", greg: "2026/6/28" },
+          { title:"سيتم إضافة المواعيد هنا قريبًا", greg:null }
         ]
       },
-
-      retire: {
+      pension: {
         title: "👴 رواتب المتقاعدين",
         items: [
-          { title: "مثال: دفعة 1", hijri: "—", greg: "—" },
-          { title: "مثال: دفعة 2", hijri: "—", greg: "—" },
+          { title:"سيتم إضافة المواعيد هنا قريبًا", greg:null }
         ]
       },
-
       citizen: {
         title: "🧾 حساب المواطن",
         items: [
-          { title: "موعد الإيداع (مثال)", hijri: "—", greg: "—" },
+          { title:"سيتم إضافة المواعيد هنا قريبًا", greg:null }
         ]
       },
-
-      hijri: {
-        title: "📅 التقويم الهجري والميلادي",
-        items: [] // بنعرض اليوم تلقائياً
-      },
-
-      school: {
-        title: "🏫 التقويم الدراسي",
-        // ضع الصور داخل الريبو:
-        // assets/school-general.jpg
-        // assets/school-makkah-madina.jpg
-        generalImg: "assets/school-general.jpg",
-        makkahImg: "assets/school-makkah-madina.jpg"
+      social: {
+        title: "🧑‍🤝‍🧑 الضمان الاجتماعي",
+        items: [
+          { title:"سيتم إضافة المواعيد هنا قريبًا", greg:null }
+        ]
       }
     };
 
-    // ===== Modal renderers =====
-    function openModal(key){
-      const back = document.getElementById("modalBack");
-      const title = document.getElementById("modalTitle");
-      const body = document.getElementById("modalBody");
-
-      body.innerHTML = "";
-      back.style.display = "flex";
-
-      if(key === "school"){
-        title.textContent = DATA.school.title;
-
-        body.innerHTML = `
-          <div class="list">
-            <div class="item">
-              <div class="itemTitle">📌 التقويم الدراسي العام</div>
-              <div class="imgBox">
-                <img src="${DATA.school.generalImg}" alt="التقويم الدراسي العام">
-              </div>
-            </div>
-
-            <div class="item">
-              <div class="itemTitle">📌 مكة والمدينة المنورة</div>
-              <div class="imgBox">
-                <img src="${DATA.school.makkahImg}" alt="تقويم مكة والمدينة">
-              </div>
-            </div>
-
-            <div class="hint">
-              إذا ما ظهرت الصور: تأكد رفعتها داخل الريبو في مجلد <b>assets</b> بالأسماء نفسها.
-            </div>
-          </div>
-        `;
-        return;
-      }
-
-      if(key === "hijri"){
-        title.textContent = DATA.hijri.title;
-        const now = new Date();
-        const hijri = getHijriText(now);
-        const greg = new Intl.DateTimeFormat("ar-SA", {
+    // ===== أدوات وقت/تاريخ =====
+    function getHijriText(now){
+      try{
+        return new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura", {
           weekday:"long", day:"numeric", month:"long", year:"numeric"
         }).format(now);
+      }catch(e){
+        return new Intl.DateTimeFormat("ar-SA-u-ca-islamic", {
+          weekday:"long", day:"numeric", month:"long", year:"numeric"
+        }).format(now);
+      }
+    }
 
-        body.innerHTML = `
-          <div class="list">
-            <div class="item">
-              <div class="itemTitle">📅 تاريخ اليوم</div>
-              <div class="itemMeta">
-                <span class="chip">هجري: ${hijri}</span>
-                <span class="chip">ميلادي: ${greg}</span>
-              </div>
-            </div>
-          </div>
-        `;
-        return;
+    function formatHijri(date){
+      try{
+        return new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura", {
+          day:"numeric", month:"long", year:"numeric"
+        }).format(date);
+      }catch(e){
+        return new Intl.DateTimeFormat("ar-SA-u-ca-islamic", {
+          day:"numeric", month:"long", year:"numeric"
+        }).format(date);
+      }
+    }
+
+    function formatGreg(date){
+      return new Intl.DateTimeFormat("ar-SA", {
+        weekday:"long", day:"numeric", month:"long", year:"numeric"
+      }).format(date);
+    }
+
+    // عد تنازلي "بالأيام"
+    function countdownDays(targetDate){
+      const now = new Date();
+      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const startOfTarget = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+      const diff = Math.round((startOfTarget - startOfToday) / (1000*60*60*24));
+
+      if(diff < 0) return "انتهى";
+      if(diff === 0) return "اليوم";
+      if(diff === 1) return "باقي يوم";
+      if(diff === 2) return "باقي يومين";
+      return `باقي ${diff} أيام`;
+    }
+
+    function updateHeaderTime(){
+      const now = new Date();
+      const timeStr = new Intl.DateTimeFormat("ar-SA", {
+        hour:"numeric", minute:"2-digit", second:"2-digit"
+      }).format(now);
+
+      document.getElementById("clock").textContent = `⏰ ${timeStr}`;
+      document.getElementById("hijriDate").textContent = `📅 ${getHijriText(now)}`;
+    }
+
+    // ===== واجهة نافذة التفاصيل =====
+    const overlay = document.getElementById("overlay");
+    const sheetTitle = document.getElementById("sheetTitle");
+    const sheetBody = document.getElementById("sheetBody");
+    const closeBtn = document.getElementById("closeBtn");
+
+    function openSheet(key){
+      if(!DATA[key]) return;
+
+      sheetTitle.textContent = DATA[key].title || "—";
+      sheetBody.innerHTML = "";
+
+      // التقويم الدراسي له فلتر (عام / مكة-المدينة)
+      if(key === "school"){
+        let active = "general";
+
+        const hint = document.createElement("div");
+        hint.className = "hint";
+        hint.textContent = "يعرض كل الأحداث مع التاريخ (ميلادي/هجري) + العدّ التنازلي.";
+        sheetBody.appendChild(hint);
+
+        const filterRow = document.createElement("div");
+        filterRow.className = "filterRow";
+
+        const btnGeneral = document.createElement("button");
+        btnGeneral.className = "chipBtn active";
+        btnGeneral.textContent = "الجدول العام";
+
+        const btnMakkah = document.createElement("button");
+        btnMakkah.className = "chipBtn";
+        btnMakkah.textContent = "مكة/المدينة";
+
+        filterRow.appendChild(btnGeneral);
+        filterRow.appendChild(btnMakkah);
+        sheetBody.appendChild(filterRow);
+
+        const list = document.createElement("div");
+        list.className = "list";
+        sheetBody.appendChild(list);
+
+        function render(){
+          list.innerHTML = "";
+          const items = (DATA.school[active] || []).slice()
+            .sort((a,b)=> new Date(a.greg) - new Date(b.greg));
+
+          items.forEach(ev=>{
+            const item = document.createElement("div");
+            item.className = "item";
+
+            const title = document.createElement("div");
+            title.className = "itemTitle";
+            title.textContent = ev.title;
+
+            const meta = document.createElement("div");
+            meta.className = "itemMeta";
+
+            const d = new Date(ev.greg);
+
+            const c1 = document.createElement("span");
+            c1.className = "chip";
+            c1.textContent = `🗓️ ميلادي: ${formatGreg(d)}`;
+
+            const c2 = document.createElement("span");
+            c2.className = "chip";
+            c2.textContent = `📅 هجري: ${formatHijri(d)}`;
+
+            const c3 = document.createElement("span");
+            c3.className = "chip";
+            c3.textContent = `⏳ ${countdownDays(d)}`;
+
+            meta.appendChild(c1);
+            meta.appendChild(c2);
+            meta.appendChild(c3);
+
+            item.appendChild(title);
+            item.appendChild(meta);
+            list.appendChild(item);
+          });
+        }
+
+        btnGeneral.addEventListener("click", ()=>{
+          active = "general";
+          btnGeneral.classList.add("active");
+          btnMakkah.classList.remove("active");
+          render();
+        });
+
+        btnMakkah.addEventListener("click", ()=>{
+          active = "makkah";
+          btnMakkah.classList.add("active");
+          btnGeneral.classList.remove("active");
+          render();
+        });
+
+        render();
+      } else {
+        // باقي الأقسام: قائمة بسيطة
+        const hint = document.createElement("div");
+        hint.className = "hint";
+        hint.textContent = "سيتم تحديث هذه الصفحة بالمواعيد الرسمية لاحقًا.";
+        sheetBody.appendChild(hint);
+
+        const list = document.createElement("div");
+        list.className = "list";
+
+        (DATA[key].items || []).forEach(ev=>{
+          const item = document.createElement("div");
+          item.className = "item";
+
+          const title = document.createElement("div");
+          title.className = "itemTitle";
+          title.textContent = ev.title;
+
+          const meta = document.createElement("div");
+          meta.className = "itemMeta";
+
+          if(ev.greg){
+            const d = new Date(ev.greg);
+            const c1 = document.createElement("span");
+            c1.className = "chip";
+            c1.textContent = `🗓️ ${formatGreg(d)}`;
+
+            const c2 = document.createElement("span");
+            c2.className = "chip";
+            c2.textContent = `⏳ ${countdownDays(d)}`;
+
+            meta.appendChild(c1);
+            meta.appendChild(c2);
+          }
+
+          item.appendChild(title);
+          if(meta.childNodes.length) item.appendChild(meta);
+          list.appendChild(item);
+        });
+
+        sheetBody.appendChild(list);
       }
 
-      // default list
-      const section = DATA[key];
-      title.textContent = section.title;
-
-      body.innerHTML = `
-        <div class="list">
-          ${section.items.map(x => `
-            <div class="item">
-              <div class="itemTitle">${x.title}</div>
-              <div class="itemMeta">
-                <span class="chip">🗓️ هجري: ${x.hijri}</span>
-                <span class="chip">📆 ميلادي: ${x.greg}</span>
-              </div>
-            </div>
-          `).join("")}
-        </div>
-
-        <div class="hint">
-          لتعديل المواعيد: افتح <b>calendar.html</b> وانزل لقسم <b>DATA</b> وعدّل القيم.
-        </div>
-      `;
+      overlay.classList.add("show");
     }
 
-    function closeModal(e){
-      if(e && e.target && e.target.id !== "modalBack") return;
-      document.getElementById("modalBack").style.display = "none";
+    function closeSheet(){
+      overlay.classList.remove("show");
     }
 
-    // تشغيل
-    updateDateTime();
-    setInterval(updateDateTime, 1000);
+    closeBtn.addEventListener("click", closeSheet);
+    overlay.addEventListener("click", (e)=>{
+      if(e.target === overlay) closeSheet();
+    });
+
+    // ===== ربط المربعات =====
+    document.querySelectorAll(".tile").forEach(el=>{
+      el.addEventListener("click", ()=> openSheet(el.dataset.key));
+    });
+
+    // ===== تشغيل =====
+    updateHeaderTime();
+    setInterval(updateHeaderTime, 1000);
   </script>
 </body>
 </html>
