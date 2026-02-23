@@ -296,126 +296,153 @@
       font-weight: 700;
     }
 
-    /* ===== صفحة التقويم (شبكة مربعات مثل الصورة) ===== */
+    /* =========================
+       صفحة تقويم السعودية - بطاقات
+       ========================= */
     .calGrid{
       display:grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 12px;
+      gap: 14px;
+      margin-top: 8px;
     }
-
     .calTile{
-      border-radius: 18px;
-      padding: 18px 14px;
-      border: 1px solid rgba(255,255,255,.12);
+      position:relative;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.05);
-      cursor:pointer;
-      user-select:none;
+      padding: 18px 14px;
       min-height: 92px;
+      cursor:pointer;
+      overflow:hidden;
       display:flex;
       align-items:center;
       justify-content:center;
       text-align:center;
-      font-size: 22px;
-      font-weight: 900;
-      line-height:1.4;
-      color: #0c1b34; /* بيتغير مع التدرج */
-      position: relative;
-      overflow:hidden;
+      box-shadow: 0 14px 35px rgba(0,0,0,.18);
+      transition: transform .08s ease, border-color .08s ease;
     }
-
+    .calTile:active{ transform: scale(.99); }
     .calTile::before{
       content:"";
       position:absolute;
-      inset:0;
-      background: var(--tileGrad);
-      opacity: .95;
+      inset:-40px -40px auto auto;
+      width: 160px;
+      height: 160px;
+      border-radius: 999px;
+      filter: blur(0px);
+      opacity: .55;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), rgba(255,255,255,0) 60%);
+      transform: rotate(12deg);
     }
-
-    .calTile span{
-      position:relative;
+    .calTile .tTitle{
+      font-weight: 950;
+      font-size: 22px;
+      letter-spacing: .3px;
+      color: rgba(255,255,255,.92);
       z-index:1;
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      color:#0b1a2f;
+      line-height: 1.25;
     }
-
-    .calTile small{
+    .calTile .tIcon{
       display:block;
-      font-size: 13px;
-      font-weight: 800;
-      opacity:.75;
-      margin-top: 6px;
+      font-size: 26px;
+      margin-bottom: 8px;
+      opacity:.95;
     }
 
-    /* تدرجات مختلفة مثل الصورة */
-    .t1{ --tileGrad: linear-gradient(135deg, #d9f2ff, #f7fbff); }
-    .t2{ --tileGrad: linear-gradient(135deg, #dff9e8, #f7fffb); }
-    .t3{ --tileGrad: linear-gradient(135deg, #fff1c7, #fffdf4); }
-    .t4{ --tileGrad: linear-gradient(135deg, #e6ffdf, #f9fff7); }
-    .t5{ --tileGrad: linear-gradient(135deg, #dff7ff, #f7feff); }
-    .t6{ --tileGrad: linear-gradient(135deg, #fff0d9, #fffaf3); }
+    .tileBlue{ background: linear-gradient(180deg, rgba(85,160,255,.18), rgba(255,255,255,.04)); }
+    .tileGreen{ background: linear-gradient(180deg, rgba(90,220,160,.16), rgba(255,255,255,.04)); }
+    .tileGold{ background: linear-gradient(180deg, rgba(255,205,90,.14), rgba(255,255,255,.04)); }
+    .tileTeal{ background: linear-gradient(180deg, rgba(90,225,225,.14), rgba(255,255,255,.04)); }
 
-    .calViewer{
-      margin-top: 14px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 22px;
-      padding: 14px;
+    /* مودال عرض المعلومات */
+    .modalOverlay{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding: 18px 12px;
+      z-index: 9999;
     }
-
-    .calViewerHeader{
+    .modal{
+      width: min(720px, 100%);
+      background: linear-gradient(180deg, rgba(14,33,70,.98), rgba(10,22,45,.98));
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 24px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.55);
+      overflow:hidden;
+    }
+    .modalHead{
+      padding: 14px 14px 10px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap: 10px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
+      border-bottom: 1px solid rgba(255,255,255,.10);
     }
-
-    .calViewerHeader .label{
-      font-weight: 900;
-      color:#e9f1ff;
-      font-size: 18px;
+    .modalTitle{
+      font-weight: 950;
+      font-size: 20px;
+      color: rgba(255,255,255,.95);
+      display:flex;
+      align-items:center;
+      gap: 10px;
     }
-
-    .calViewerHeader .openBtn{
+    .closeBtn{
       border:none;
+      outline:none;
       background: rgba(255,255,255,.10);
-      border: 1px solid rgba(255,255,255,.18);
-      color:#fff;
+      color: rgba(255,255,255,.92);
       padding: 10px 12px;
       border-radius: 14px;
       cursor:pointer;
-      font-weight: 800;
-      font-size: 14px;
+      font-weight: 900;
     }
-
-    .calFrameWrap{
-      width:100%;
-      height: 560px;
-      border-radius: 18px;
-      overflow:hidden;
-      background: rgba(0,0,0,.25);
+    .modalBody{
+      padding: 14px;
+      max-height: 65vh;
+      overflow:auto;
+    }
+    .infoLine{
+      background: rgba(255,255,255,.05);
       border: 1px solid rgba(255,255,255,.10);
+      border-radius: 18px;
+      padding: 12px 12px;
+      margin-bottom: 10px;
+      line-height: 1.8;
+      color: rgba(255,255,255,.90);
+      font-weight: 750;
+      font-size: 16px;
     }
-
-    .calHint{
-      margin-top: 10px;
+    .infoLine small{
+      display:block;
       color: rgba(255,255,255,.65);
-      font-size: 13px;
-      line-height: 1.7;
-      text-align:center;
       font-weight: 700;
+      margin-top: 3px;
+      font-size: 13px;
+    }
+    .loading{
+      text-align:center;
+      color: rgba(255,255,255,.78);
+      font-weight: 900;
+      padding: 10px 0 6px;
+    }
+    .hint{
+      text-align:center;
+      color: rgba(255,255,255,.55);
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: 8px;
     }
 
     @media (max-width: 420px){
       .btn{ font-size: 28px; }
       .input{ font-size: 22px; }
       .topSelect{ font-size: 17px; }
-      .calTile{ font-size: 18px; min-height: 86px; }
-      .calFrameWrap{ height: 520px; }
+      .calGrid{ grid-template-columns: 1fr 1fr; gap: 12px; }
+      .calTile{ min-height: 88px; }
+      .calTile .tTitle{ font-size: 20px; }
     }
   </style>
 </head>
@@ -499,7 +526,7 @@
         <div class="footer">مع تحيات: المبرمج راعي المدبله 🔥💻</div>
       </div>
 
-      <!-- صفحة التقويم -->
+      <!-- صفحة التقويم (بطاقات) -->
       <div id="calendarPage" style="display:none;">
         <div class="title">تقويم السعودية <span class="emoji">🇸🇦</span></div>
         <div class="sub" id="calHijri">—</div>
@@ -507,52 +534,24 @@
 
         <hr class="sep">
 
-        <!-- شبكة المربعات -->
-        <div class="calGrid">
-          <div class="calTile t1" onclick="openCal('school')">
-            <span>📘 التقويم الدراسي</span>
-          </div>
+        <div class="calGrid" id="calGrid"></div>
 
-          <div class="calTile t2" onclick="openCal('salaries')">
-            <span>💰 موعد الرواتب</span>
-          </div>
-
-          <div class="calTile t3" onclick="openCal('pension')">
-            <span>👴 رواتب المتقاعدين</span>
-          </div>
-
-          <div class="calTile t4" onclick="openCal('citizen')">
-            <span>🧾 حساب المواطن</span>
-          </div>
-
-          <div class="calTile t5" onclick="openCal('converter')">
-            <span>🔁 تحويل التاريخ</span>
-          </div>
-
-          <div class="calTile t6" onclick="openCal('social')">
-            <span>🛡️ الضمان الاجتماعي</span>
-          </div>
-        </div>
-
-        <!-- عارض داخلي -->
-        <div class="calViewer" id="calViewer" style="display:none;">
-          <div class="calViewerHeader">
-            <div class="label" id="calViewerLabel">—</div>
-            <button class="openBtn" onclick="openCalExternal()">فتح في المتصفح ↗</button>
-          </div>
-
-          <div class="calFrameWrap">
-            <iframe id="calFrame" title="Saudi Calendars"></iframe>
-          </div>
-
-          <div class="calHint">
-            إذا ما ظهر الموقع داخل التطبيق (بعض المواقع تمنع iframe)، اضغط زر <b>فتح في المتصفح</b>.
-          </div>
-        </div>
-
-        <div class="footer">مع تحيات: المبرمج راعي المدبله 🔥💻</div>
+        <div class="footer">مصدر المعلومات: saudicalendars.com</div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- مودال عرض البيانات -->
+  <div class="modalOverlay" id="modalOverlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="modalHead">
+        <div class="modalTitle" id="modalTitle">—</div>
+        <button class="closeBtn" id="closeBtn">إغلاق</button>
+      </div>
+      <div class="modalBody" id="modalBody">
+        <div class="loading">جاري تحميل المعلومات…</div>
+      </div>
     </div>
   </div>
 
@@ -563,42 +562,6 @@
 
     // رابط اليوتيوب
     const YT_URL = "https://www.youtube.com/live/Cm1v4bteXbI?si=K5IIII-EJ8R4HQEb";
-
-    // ===== روابط التقويم (SaudiCalendars) =====
-    const CAL_LINKS = {
-      salaries: { label: "💰 موعد الرواتب", url: "https://saudicalendars.com/salaries-dates/" },
-      citizen:  { label: "🧾 حساب المواطن", url: "https://saudicalendars.com/citizen-account/" },
-      school:   { label: "📘 التقويم الدراسي", url: "https://saudicalendars.com/school-calendar/" },
-      pension:  { label: "👴 رواتب المتقاعدين", url: "https://saudicalendars.com/pensioners-salaries/" },
-      social:   { label: "🛡️ الضمان الاجتماعي", url: "https://saudicalendars.com/social-security-salary/" },
-      converter:{ label: "🔁 تحويل التاريخ", url: "https://saudicalendars.com/date-converter/" },
-    };
-
-    let lastCalUrl = "";
-
-    function openCal(key){
-      const item = CAL_LINKS[key];
-      if(!item) return;
-
-      lastCalUrl = item.url;
-
-      const viewer = document.getElementById("calViewer");
-      const label = document.getElementById("calViewerLabel");
-      const frame = document.getElementById("calFrame");
-
-      label.textContent = item.label;
-      viewer.style.display = "block";
-
-      // محاولة عرض داخل iframe
-      frame.src = item.url;
-      // نرجع للأعلى شوي إذا المستخدم تحت
-      viewer.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    function openCalExternal(){
-      if(!lastCalUrl) return;
-      window.open(lastCalUrl, "_blank");
-    }
 
     // ===== تبديل الصفحات =====
     function switchPage(){
@@ -800,6 +763,170 @@
       `;
     }
 
+    // =========================
+    // تقويم السعودية (بطاقات + تحميل بيانات بدون فتح الموقع)
+    // =========================
+
+    const CAL_SECTIONS = [
+      {
+        key: "academic",
+        title: "التقويم الدراسي",
+        icon: "🎓",
+        cls: "tileBlue",
+        url: "https://saudicalendars.com/academic-calendar/"
+      },
+      {
+        key: "salaries",
+        title: "موعد الرواتب",
+        icon: "💰",
+        cls: "tileGreen",
+        url: "https://saudicalendars.com/salaries-dates/"
+      },
+      {
+        key: "citizen",
+        title: "حساب المواطن",
+        icon: "👤",
+        cls: "tileTeal",
+        url: "https://saudicalendars.com/citizen-account/"
+      },
+      {
+        key: "retirees",
+        title: "رواتب المتقاعدين",
+        icon: "🧓",
+        cls: "tileGold",
+        url: "https://saudicalendars.com/retirees-salaries/"
+      },
+      {
+        key: "social",
+        title: "الضمان الاجتماعي",
+        icon: "🛡️",
+        cls: "tileGold",
+        url: "https://saudicalendars.com/deposit-social-security/"
+      },
+      {
+        key: "convert",
+        title: "تحويل التاريخ",
+        icon: "🔁",
+        cls: "tileBlue",
+        url: "https://saudicalendars.com/date-converter/"
+      }
+    ];
+
+    function renderCalendarTiles(){
+      const grid = document.getElementById("calGrid");
+      grid.innerHTML = "";
+      CAL_SECTIONS.forEach(sec=>{
+        const tile = document.createElement("div");
+        tile.className = `calTile ${sec.cls}`;
+        tile.innerHTML = `
+          <div class="tTitle">
+            <span class="tIcon">${sec.icon}</span>
+            ${sec.title}
+          </div>
+        `;
+        tile.addEventListener("click", ()=>openSection(sec));
+        grid.appendChild(tile);
+      });
+    }
+
+    const modalOverlay = document.getElementById("modalOverlay");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalBody = document.getElementById("modalBody");
+
+    function openModal(){
+      modalOverlay.style.display = "flex";
+    }
+    function closeModal(){
+      modalOverlay.style.display = "none";
+    }
+    document.getElementById("closeBtn").addEventListener("click", closeModal);
+    modalOverlay.addEventListener("click", (e)=>{
+      if(e.target === modalOverlay) closeModal();
+    });
+
+    // جلب الصفحة بدون فتحها (CORS) عبر allorigins
+    async function fetchHtml(url){
+      const proxy = "https://api.allorigins.win/raw?url=" + encodeURIComponent(url);
+      const res = await fetch(proxy, { cache: "no-store" });
+      if(!res.ok) throw new Error("Fetch failed");
+      return await res.text();
+    }
+
+    function parseEventsFromSaudiCalendars(html, limit = 8){
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      const anchors = Array.from(doc.querySelectorAll("a"));
+
+      // نلتقط الروابط اللي فيها تاريخ هجري/ميلادي
+      const items = [];
+      for(const a of anchors){
+        const t = (a.textContent || "").replace(/\s+/g, " ").trim();
+        if(!t) continue;
+
+        // أغلب صفحاتهم فيها: 144x/... هـ - 202x/... م
+        const hasHijri = t.includes("هـ");
+        const hasGreg = t.includes("م");
+        if(!hasHijri || !hasGreg) continue;
+
+        // استخراج هجري/ميلادي
+        const hijriMatch = t.match(/(\d{4}\/\d{1,2}\/\d{1,2})\s*هـ/);
+        const gregMatch  = t.match(/(\d{4}\/\d{1,2}\/\d{1,2})\s*م/);
+
+        // عنوان مختصر: نحاول ناخذ أول جزء قبل "144"
+        let title = t;
+        const idx144 = t.indexOf("144");
+        if(idx144 > 0) title = t.slice(0, idx144).trim();
+
+        // نظف العنوان شوي
+        title = title.replace(/طوال اليوم/g, "").replace(/الوقت المتبقي\s*:\s*$/g, "").trim();
+
+        items.push({
+          title,
+          hijri: hijriMatch ? hijriMatch[1] : null,
+          greg: gregMatch ? gregMatch[1] : null,
+          raw: t
+        });
+
+        if(items.length >= limit) break;
+      }
+
+      // إذا ما نجح الالتقاط لأي سبب
+      if(items.length === 0){
+        return [{ title: "تعذر استخراج البيانات من الصفحة.", hijri: null, greg: null, raw: "" }];
+      }
+      return items;
+    }
+
+    async function openSection(sec){
+      modalTitle.textContent = `${sec.icon} ${sec.title}`;
+      modalBody.innerHTML = `<div class="loading">جاري تحميل المعلومات…</div>`;
+      openModal();
+
+      try{
+        const html = await fetchHtml(sec.url);
+        const events = parseEventsFromSaudiCalendars(html, 10);
+
+        modalBody.innerHTML = events.map(ev=>{
+          const main = ev.title || "—";
+          const h = ev.hijri ? `📅 هجري: ${ev.hijri}` : "";
+          const g = ev.greg ? `🗓️ ميلادي: ${ev.greg}` : "";
+          const sub = [h,g].filter(Boolean).join(" • ");
+          return `
+            <div class="infoLine">
+              ${main}
+              ${sub ? `<small>${sub}</small>` : ""}
+            </div>
+          `;
+        }).join("") + `<div class="hint">تم جلب البيانات بدون فتح صفحة خارجية.</div>`;
+      }catch(err){
+        modalBody.innerHTML = `
+          <div class="infoLine">
+            ⚠️ تعذر تحميل البيانات الآن.
+            <small>إذا تكرر، قلّي وش جهازك/المتصفح (قد يحظر البروكسي).</small>
+          </div>
+        `;
+      }
+    }
+
     // ===== ربط الأحداث =====
     document.getElementById("pageSelect").addEventListener("change", switchPage);
 
@@ -813,6 +940,7 @@
     });
 
     // ===== تشغيل أولي =====
+    renderCalendarTiles();
     refreshModeUI();
     switchPage();
     updateDateTime();
