@@ -1,6 +1,6 @@
 /* maintenance.js */
 
-const MAINTENANCE = true;
+const MAINTENANCE = false;
 // غيرها إلى true لتفعيل وضع الصيانة
 
 const MAINTENANCE_MESSAGE = `
