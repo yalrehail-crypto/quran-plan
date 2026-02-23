@@ -296,7 +296,7 @@
       font-weight: 700;
     }
 
-    /* صفحة التقويم */
+    /* صندوق محتوى التقويم */
     .calendarBox{
       background: rgba(255,255,255,.04);
       border: 1px solid rgba(255,255,255,.08);
@@ -318,10 +318,61 @@
       font-weight:700;
     }
 
+    /* ===== مربعات تقويم السعودية (مثل الصورة) ===== */
+    .tiles{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 4px;
+    }
+    .tile{
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 22px;
+      padding: 22px 16px;
+      min-height: 92px;
+      cursor:pointer;
+      text-align:center;
+      background: rgba(255,255,255,.05);
+      color: #fff;
+      font-weight: 900;
+      font-size: 20px;
+      box-shadow: 0 14px 30px rgba(0,0,0,.18);
+      position: relative;
+      overflow:hidden;
+      transition: transform .08s ease;
+    }
+    .tile:active{ transform: scale(.99); }
+
+    .tile::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      opacity:.35;
+      background:
+        radial-gradient(300px 120px at 15% 20%, rgba(255,255,255,.25), transparent 60%),
+        radial-gradient(320px 140px at 80% 0%, rgba(255,255,255,.20), transparent 60%);
+    }
+
+    .tileTitle{
+      position:relative;
+      z-index:1;
+    }
+
+    /* ألوان مثل الصورة */
+    .t-blue{ background: linear-gradient(135deg, rgba(72,126,255,.35), rgba(255,255,255,.05)); }
+    .t-green{ background: linear-gradient(135deg, rgba(74,196,120,.30), rgba(255,255,255,.05)); }
+    .t-gold{ background: linear-gradient(135deg, rgba(255,196,72,.28), rgba(255,255,255,.05)); }
+    .t-lime{ background: linear-gradient(135deg, rgba(120,255,140,.22), rgba(255,255,255,.05)); }
+    .t-cyan{ background: linear-gradient(135deg, rgba(72,255,240,.20), rgba(255,255,255,.05)); }
+    .t-sand{ background: linear-gradient(135deg, rgba(220,190,120,.24), rgba(255,255,255,.05)); }
+
+    .calContent{ margin-top: 14px; }
+
     @media (max-width: 420px){
       .btn{ font-size: 28px; }
       .input{ font-size: 22px; }
       .topSelect{ font-size: 17px; }
+      .tile{ font-size: 18px; min-height: 88px; }
     }
   </style>
 </head>
@@ -405,7 +456,7 @@
         <div class="footer">مع تحيات: المبرمج راعي المدبله 🔥💻</div>
       </div>
 
-      <!-- صفحة التقويم -->
+      <!-- صفحة التقويم (مربعات مثل الصورة) -->
       <div id="calendarPage" style="display:none;">
         <div class="title">تقويم السعودية <span class="emoji">🇸🇦</span></div>
         <div class="sub" id="calHijri">—</div>
@@ -413,9 +464,37 @@
 
         <hr class="sep">
 
-        <div class="calendarBox">
-          <h2>📅 اليوم</h2>
-          <p id="calTodayText">—</p>
+        <div class="tiles">
+          <button class="tile t-blue" onclick="openCalSection('study')">
+            <div class="tileTitle">التقويم الدراسي</div>
+          </button>
+
+          <button class="tile t-green" onclick="openCalSection('salary')">
+            <div class="tileTitle">موعد الرواتب</div>
+          </button>
+
+          <button class="tile t-gold" onclick="openCalSection('pension')">
+            <div class="tileTitle">رواتب المتقاعدين</div>
+          </button>
+
+          <button class="tile t-lime" onclick="openCalSection('citizen')">
+            <div class="tileTitle">حساب المواطن</div>
+          </button>
+
+          <button class="tile t-cyan" onclick="openCalSection('hijri')">
+            <div class="tileTitle">التقويم الهجري والميلادي</div>
+          </button>
+
+          <button class="tile t-sand" onclick="openCalSection('gosi')">
+            <div class="tileTitle">الضمان الاجتماعي</div>
+          </button>
+        </div>
+
+        <div class="calContent" id="calContent">
+          <div class="calendarBox">
+            <h2>اختر مربع من فوق 👆</h2>
+            <p>وبيطلع لك المحتوى هنا.</p>
+          </div>
         </div>
 
         <div class="footer">مع تحيات: المبرمج راعي المدبله 🔥💻</div>
@@ -510,12 +589,6 @@
       // صفحة التقويم
       document.getElementById("calClock").textContent = `⏰ ${timeStr}`;
       document.getElementById("calHijri").textContent = `📅 ${hijriText}`;
-
-      const greg = new Intl.DateTimeFormat("ar-SA", {
-        weekday:"long", day:"numeric", month:"long", year:"numeric"
-      }).format(now);
-
-      document.getElementById("calTodayText").textContent = `🗓️ ${greg}`;
     }
 
     // ===== معلومات اليوم الهجري (للأيام المتبقية) =====
@@ -635,6 +708,46 @@
         <div>📅 ${daysLabel}</div>
         <div>📖 اقرأ يوميًا: <b>${perDay}</b> صفحة</div>
         <div>✅ لتختم قبل نهاية المدة</div>
+      `;
+    }
+
+    // ===== تقويم السعودية: فتح الأقسام =====
+    function openCalSection(key){
+      const box = document.getElementById("calContent");
+
+      if(key === "hijri"){
+        const now = new Date();
+        const hijri = getHijriText(now);
+        const greg = new Intl.DateTimeFormat("ar-SA", {
+          weekday:"long", day:"numeric", month:"long", year:"numeric"
+        }).format(now);
+
+        box.innerHTML = `
+          <div class="calendarBox">
+            <h2>📅 التقويم الهجري والميلادي</h2>
+            <p>الهجري: ${hijri}</p>
+            <p style="margin-top:8px;">الميلادي: ${greg}</p>
+          </div>
+        `;
+        return;
+      }
+
+      const titles = {
+        study: "التقويم الدراسي",
+        salary: "موعد الرواتب",
+        pension: "رواتب المتقاعدين",
+        citizen: "حساب المواطن",
+        gosi: "الضمان الاجتماعي"
+      };
+
+      box.innerHTML = `
+        <div class="calendarBox">
+          <h2>${titles[key] || "تقويم السعودية"}</h2>
+          <p>هنا نحط التفاصيل الخاصة بهذا القسم.</p>
+          <p style="margin-top:10px;color:rgba(255,255,255,.7);font-size:14px;">
+            إذا تبي أربطها ببيانات حقيقية، عطِني المصدر اللي تبغاه (رابط رسمي) لكل مربع.
+          </p>
+        </div>
       `;
     }
 
