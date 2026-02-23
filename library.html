@@ -1,512 +1,180 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>مكتبتي</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مكتبتي</title>
 
-  <style>
-    :root{
-      --bg:#081426;
-      --card:#0f2140cc;
-      --text:#ffffff;
-      --muted:#b9c6df;
-      --muted2:#93a4c6;
-      --accent:#3f66ff;
-      --accent2:#2b4dd6;
-      --shadow: 0 20px 50px rgba(0,0,0,.35);
-      --radius: 26px;
-    }
-    *{ box-sizing:border-box; }
+<style>
+:root{
+  --bg:#081426;
+  --card:#0f2140cc;
+  --text:#fff;
+  --accent:#3f66ff;
+  --accent2:#2b4dd6;
+  --radius:22px;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:system-ui;
+  background: radial-gradient(circle at top,#143261,#050b14);
+  color:var(--text);
+  padding:20px;
+}
+.container{
+  max-width:1000px;
+  margin:auto;
+}
+h1{
+  text-align:center;
+  font-size:32px;
+  margin-bottom:20px;
+}
 
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
-      background: radial-gradient(1200px 800px at 50% -200px, #143261 0%, var(--bg) 55%, #050b14 100%);
-      color:var(--text);
-      min-height:100vh;
-      display:flex;
-      justify-content:center;
-      padding:24px 14px 60px;
-    }
+.cats{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-bottom:25px;
+}
+.cat{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.15);
+  padding:14px;
+  border-radius:var(--radius);
+  font-weight:bold;
+  cursor:pointer;
+  transition:.2s;
+}
+.cat:hover{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+}
 
-    .wrap{ width:min(980px, 100%); }
+.search{
+  width:100%;
+  padding:15px;
+  border-radius:20px;
+  border:none;
+  margin-bottom:25px;
+  font-size:16px;
+}
 
-    .card{
-      background: linear-gradient(180deg, rgba(14,33,70,.95), rgba(10,22,45,.92));
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 18px;
-      overflow:hidden;
-    }
+.books{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:20px;
+}
 
-    .topbar{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
-    }
-    .title{
-      font-weight: 1000;
-      font-size: 30px;
-      margin:0;
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-    .title small{
-      font-size: 14px;
-      color: rgba(255,255,255,.65);
-      font-weight: 800;
-    }
-
-    .nav{
-      display:flex;
-      gap:8px;
-      flex-wrap: wrap;
-    }
-    .nav a{
-      text-decoration:none;
-      color:white;
-      font-weight:900;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      padding:10px 12px;
-      border-radius: 14px;
-    }
-    .nav a.active{
-      background: linear-gradient(180deg, var(--accent), var(--accent2));
-      border-color: transparent;
-      box-shadow: 0 18px 45px rgba(63,102,255,.22);
-    }
-
-    .searchRow{
-      display:flex;
-      gap:10px;
-      flex-wrap: wrap;
-      margin: 10px 0 14px;
-    }
-    .input{
-      flex: 1 1 240px;
-      border:none;
-      outline:none;
-      background: #f3f5f9;
-      padding: 14px 14px;
-      border-radius: 16px;
-      font-size: 16px;
-      font-weight: 800;
-      color:#111827;
-    }
-    .pill{
-      flex: 0 0 auto;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      padding: 10px 12px;
-      border-radius: 16px;
-      font-weight: 900;
-      color: rgba(255,255,255,.92);
-    }
-
-    .cats{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 12px;
-      margin: 14px 0 18px;
-    }
-    @media (min-width: 720px){
-      .cats{ grid-template-columns: repeat(3, minmax(0,1fr)); }
-    }
-
-    .catBtn{
-      border:none;
-      outline:none;
-      cursor:pointer;
-      text-align:right;
-      padding: 16px 14px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.10);
-      color:white;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      transition: transform .06s ease, border-color .2s ease;
-      min-height: 64px;
-    }
-    .catBtn:active{ transform: scale(.99); }
-    .catBtn.active{
-      border-color: rgba(63,102,255,.55);
-      box-shadow: 0 0 0 3px rgba(63,102,255,.18);
-      background: rgba(63,102,255,.10);
-    }
-    .catName{
-      font-weight: 1000;
-      font-size: 18px;
-      line-height: 1.2;
-    }
-    .catMeta{
-      color: rgba(255,255,255,.65);
-      font-weight: 900;
-      font-size: 13px;
-      margin-top: 4px;
-    }
-    .catIcon{
-      width: 44px; height: 44px;
-      border-radius: 14px;
-      display:grid;
-      place-items:center;
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.10);
-      flex: 0 0 auto;
-      font-size: 20px;
-    }
-
-    .booksHeader{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap: wrap;
-      margin: 8px 0 10px;
-      padding-top: 8px;
-      border-top:1px solid rgba(255,255,255,.10);
-    }
-    .booksHeader h2{
-      margin:0;
-      font-size: 20px;
-      font-weight: 1000;
-    }
-    .muted{
-      color: rgba(255,255,255,.65);
-      font-weight: 800;
-      font-size: 13px;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 12px;
-    }
-    @media (min-width: 720px){
-      .grid{ grid-template-columns: repeat(4, minmax(0,1fr)); }
-    }
-
-    .bookCard{
-      background: rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius: 18px;
-      overflow:hidden;
-      display:flex;
-      flex-direction:column;
-      min-height: 210px;
-    }
-    .cover{
-      height: 120px;
-      background: linear-gradient(135deg, rgba(63,102,255,.25), rgba(255,255,255,.06));
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size: 34px;
-      font-weight: 1000;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-    }
-    .bookBody{
-      padding: 12px;
-      display:flex;
-      flex-direction:column;
-      gap: 8px;
-      flex:1;
-    }
-    .bookTitle{
-      font-weight: 1000;
-      font-size: 15px;
-      line-height: 1.4;
-      max-height: 44px;
-      overflow:hidden;
-    }
-    .bookInfo{
-      color: rgba(255,255,255,.70);
-      font-weight: 800;
-      font-size: 12px;
-      line-height:1.6;
-    }
-    .actions{
-      display:flex;
-      gap:8px;
-      margin-top:auto;
-    }
-    .btn{
-      flex:1;
-      border:none;
-      outline:none;
-      cursor:pointer;
-      padding:10px 10px;
-      border-radius: 14px;
-      font-weight: 1000;
-      color:white;
-      background: rgba(255,255,255,.07);
-      border:1px solid rgba(255,255,255,.10);
-    }
-    .btn.primary{
-      background: linear-gradient(180deg, var(--accent), var(--accent2));
-      border-color: transparent;
-      box-shadow: 0 12px 34px rgba(63,102,255,.25);
-    }
-
-    /* مودال عرض PDF */
-    .modal{
-      position:fixed;
-      inset:0;
-      background: rgba(0,0,0,.55);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:16px;
-      z-index: 9999;
-    }
-    .modal.show{ display:flex; }
-    .modalBox{
-      width:min(980px, 100%);
-      height:min(85vh, 720px);
-      background: #0a1630;
-      border:1px solid rgba(255,255,255,.12);
-      border-radius: 18px;
-      overflow:hidden;
-      box-shadow: 0 25px 80px rgba(0,0,0,.65);
-      display:flex;
-      flex-direction:column;
-    }
-    .modalTop{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:10px 12px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-    }
-    .modalTop b{ font-weight: 1000; }
-    .closeBtn{
-      border:none;
-      outline:none;
-      cursor:pointer;
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
-      color:white;
-      padding:8px 12px;
-      border-radius: 12px;
-      font-weight: 1000;
-    }
-    .pdfFrame{
-      width:100%;
-      height:100%;
-      border:0;
-      background: #0a1630;
-    }
-
-    .empty{
-      padding:18px;
-      border:1px dashed rgba(255,255,255,.18);
-      border-radius: 18px;
-      color: rgba(255,255,255,.75);
-      font-weight: 900;
-      text-align:center;
-    }
-  </style>
+.book{
+  background:var(--card);
+  padding:15px;
+  border-radius:var(--radius);
+  text-align:center;
+  transition:.2s;
+}
+.book:hover{
+  transform:translateY(-5px);
+}
+.book img{
+  width:100%;
+  height:260px;
+  object-fit:cover;
+  border-radius:14px;
+  margin-bottom:10px;
+}
+.book h3{
+  margin:5px 0;
+  font-size:16px;
+}
+.book p{
+  font-size:14px;
+  opacity:.7;
+}
+.book a{
+  display:inline-block;
+  margin-top:10px;
+  padding:8px 14px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;
+  text-decoration:none;
+  border-radius:14px;
+  font-size:14px;
+}
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="card">
 
-      <div class="topbar">
-        <h1 class="title">📚 مكتبتي <small id="subtitle">—</small></h1>
+<div class="container">
 
-        <div class="nav">
-          <a href="./index.html">الرئيسية</a>
-          <a href="./quran.html">ختم القرآن</a>
-          <a href="./calendar.html">تقويم السعودية</a>
-          <a class="active" href="./library.html">مكتبتي</a>
-        </div>
-      </div>
+<h1>📚 مكتبتي</h1>
 
-      <div class="searchRow">
-        <input id="searchInput" class="input" placeholder="ابحث عن كتاب (عنوان/مؤلف)..." />
-        <div class="pill" id="countPill">—</div>
-      </div>
+<input class="search" placeholder="ابحث عن كتاب..." onkeyup="searchBooks(this.value)">
 
-      <div class="cats" id="cats"></div>
+<div class="cats">
+  <button class="cat" onclick="filterBooks('all')">📚 جميع الكتب</button>
+  <button class="cat" onclick="filterBooks('novels')">📖 الروايات والقصص</button>
+  <button class="cat" onclick="filterBooks('islamic')">🕋 المكتبة الإسلامية</button>
+  <button class="cat" onclick="filterBooks('literature')">📜 الأدب والشعر</button>
+  <button class="cat" onclick="filterBooks('philosophy')">🧠 الفكر والفلسفة</button>
+  <button class="cat" onclick="filterBooks('psychology')">👥 علم النفس والمجتمع</button>
+  <button class="cat" onclick="filterBooks('business')">💼 إدارة الأعمال</button>
+  <button class="cat" onclick="filterBooks('development')">📊 التنمية البشرية</button>
+  <button class="cat" onclick="filterBooks('engineering')">⚙️ المكتبة الهندسية</button>
+  <button class="cat" onclick="filterBooks('medical')">❤️ المكتبة الطبية</button>
+  <button class="cat" onclick="filterBooks('science')">🧬 الكتب العلمية</button>
+  <button class="cat" onclick="filterBooks('tech')">💻 التقنية والبرمجة</button>
+</div>
 
-      <div class="booksHeader">
-        <h2 id="sectionTitle">الكتب</h2>
-        <div class="muted" id="sectionHint">اختر قسم لعرض الكتب</div>
-      </div>
+<div class="books" id="booksContainer">
 
-      <div class="grid" id="grid"></div>
+<!-- مثال كتب -->
 
-      <div id="empty" class="empty" style="display:none;">
-        لا توجد كتب مطابقة الآن.  
-        <div style="margin-top:8px;font-size:12px;color:rgba(255,255,255,.6);font-weight:800">
-          أضف ملفات PDF داخل مجلد <b>pdf/</b> ثم حدّث قائمة الكتب في <b>library-data.js</b>
-        </div>
-      </div>
+<div class="book" data-category="islamic">
+  <img src="https://via.placeholder.com/200x260">
+  <h3>رياض الصالحين</h3>
+  <p>الإمام النووي</p>
+  <a href="#" target="_blank">قراءة PDF</a>
+</div>
 
-    </div>
-  </div>
+<div class="book" data-category="novels">
+  <img src="https://via.placeholder.com/200x260">
+  <h3>رواية تجريبية</h3>
+  <p>كاتب مجهول</p>
+  <a href="#" target="_blank">قراءة PDF</a>
+</div>
 
-  <!-- Modal -->
-  <div class="modal" id="modal">
-    <div class="modalBox">
-      <div class="modalTop">
-        <b id="modalTitle">—</b>
-        <button class="closeBtn" id="closeBtn">إغلاق</button>
-      </div>
-      <iframe class="pdfFrame" id="pdfFrame" title="PDF Preview"></iframe>
-    </div>
-  </div>
+<div class="book" data-category="tech">
+  <img src="https://via.placeholder.com/200x260">
+  <h3>تعلم البرمجة</h3>
+  <p>مؤلف تقني</p>
+  <a href="#" target="_blank">قراءة PDF</a>
+</div>
 
-  <script src="./maintenance.js"></script>
-  <script src="./library-data.js"></script>
+</div>
+</div>
 
-  <script>
-    // libraryData موجودة في library-data.js
-    const catsEl = document.getElementById("cats");
-    const gridEl = document.getElementById("grid");
-    const emptyEl = document.getElementById("empty");
-    const sectionTitleEl = document.getElementById("sectionTitle");
-    const sectionHintEl = document.getElementById("sectionHint");
-    const subtitleEl = document.getElementById("subtitle");
-    const countPillEl = document.getElementById("countPill");
-    const searchInput = document.getElementById("searchInput");
-
-    const modal = document.getElementById("modal");
-    const pdfFrame = document.getElementById("pdfFrame");
-    const modalTitle = document.getElementById("modalTitle");
-    const closeBtn = document.getElementById("closeBtn");
-
-    let activeCat = "all";
-
-    function normalize(s){
-      return (s || "")
-        .toString()
-        .trim()
-        .toLowerCase();
+<script>
+function filterBooks(category){
+  const books=document.querySelectorAll('.book');
+  books.forEach(book=>{
+    if(category==='all'){
+      book.style.display='block';
+    }else{
+      book.style.display=book.dataset.category===category?'block':'none';
     }
+  });
+}
 
-    function openPdf(book){
-      modalTitle.textContent = book.title;
-      // افتح داخل الموقع (بدون تحويل المستخدم لموقع خارجي)
-      pdfFrame.src = book.pdf;
-      modal.classList.add("show");
-    }
+function searchBooks(text){
+  const books=document.querySelectorAll('.book');
+  books.forEach(book=>{
+    const title=book.innerText.toLowerCase();
+    book.style.display=title.includes(text.toLowerCase())?'block':'none';
+  });
+}
+</script>
 
-    function closeModal(){
-      modal.classList.remove("show");
-      pdfFrame.src = "about:blank";
-    }
-
-    closeBtn.addEventListener("click", closeModal);
-    modal.addEventListener("click", (e)=>{
-      if(e.target === modal) closeModal();
-    });
-
-    function renderCats(){
-      catsEl.innerHTML = "";
-      const cats = libraryData.categories;
-
-      cats.forEach(cat=>{
-        const btn = document.createElement("button");
-        btn.className = "catBtn" + (cat.id === activeCat ? " active" : "");
-        btn.innerHTML = `
-          <div>
-            <div class="catName">${cat.name}</div>
-            <div class="catMeta">${cat.hint || ""}</div>
-          </div>
-          <div class="catIcon">${cat.icon || "📚"}</div>
-        `;
-        btn.addEventListener("click", ()=>{
-          activeCat = cat.id;
-          renderCats();
-          renderBooks();
-        });
-        catsEl.appendChild(btn);
-      });
-    }
-
-    function getFilteredBooks(){
-      const q = normalize(searchInput.value);
-      let list = libraryData.books.slice();
-
-      if(activeCat !== "all"){
-        list = list.filter(b => b.category === activeCat);
-      }
-
-      if(q){
-        list = list.filter(b => {
-          const t = normalize(b.title);
-          const a = normalize(b.author);
-          return t.includes(q) || a.includes(q);
-        });
-      }
-
-      return list;
-    }
-
-    function renderBooks(){
-      const list = getFilteredBooks();
-
-      const catObj = libraryData.categories.find(c => c.id === activeCat);
-      sectionTitleEl.textContent = catObj ? catObj.name : "الكتب";
-      sectionHintEl.textContent = catObj ? (catObj.hint || "") : "اختر قسم لعرض الكتب";
-
-      countPillEl.textContent = `📄 الكتب: ${list.length}`;
-
-      gridEl.innerHTML = "";
-      emptyEl.style.display = (list.length === 0) ? "block" : "none";
-
-      list.forEach(book=>{
-        const card = document.createElement("div");
-        card.className = "bookCard";
-
-        const coverText = (book.coverText || "PDF").toString().slice(0,3);
-
-        card.innerHTML = `
-          <div class="cover">${coverText}</div>
-          <div class="bookBody">
-            <div class="bookTitle">${book.title}</div>
-            <div class="bookInfo">
-              ${book.author ? `✍️ ${book.author}<br>` : ""}
-              ${book.year ? `📅 ${book.year}<br>` : ""}
-              ${book.license ? `✅ ${book.license}` : ""}
-            </div>
-            <div class="actions">
-              <button class="btn primary">عرض</button>
-              <a class="btn" href="${book.pdf}" download style="text-decoration:none; display:grid; place-items:center;">
-                تحميل
-              </a>
-            </div>
-          </div>
-        `;
-
-        card.querySelector(".btn.primary").addEventListener("click", ()=>openPdf(book));
-        gridEl.appendChild(card);
-      });
-
-      subtitleEl.textContent = `آخر تحديث: ${new Date().toLocaleDateString("ar-SA")}`;
-    }
-
-    searchInput.addEventListener("input", renderBooks);
-
-    // تشغيل
-    renderCats();
-    renderBooks();
-  </script>
 </body>
 </html>
