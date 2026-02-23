@@ -1,1 +1,547 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>برنامج ختم القرآن</title>
+  <style>
+    :root{
+      --bg:#081426;
+      --card:#0f2140cc;
+      --card2:#0c1b34cc;
+      --text:#ffffff;
+      --muted:#b9c6df;
+      --muted2:#93a4c6;
+      --accent:#3f66ff;
+      --accent2:#2b4dd6;
+      --white:#ffffff;
+      --input:#f3f5f9;
+      --shadow: 0 20px 50px rgba(0,0,0,.35);
+      --radius: 26px;
+    }
 
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 50% -200px, #143261 0%, var(--bg) 55%, #050b14 100%);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:24px 14px 60px;
+    }
+
+    .wrap{ width:min(720px, 100%); }
+
+    .card{
+      background: linear-gradient(180deg, rgba(14,33,70,.95), rgba(10,22,45,.92));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 26px 18px 22px;
+      overflow:hidden;
+    }
+
+    .title{
+      text-align:center;
+      font-weight:900;
+      letter-spacing:.5px;
+      font-size: clamp(34px, 6vw, 58px);
+      margin: 4px 0 6px;
+    }
+    .title .emoji{ font-size: .65em; vertical-align: middle; margin-right:10px;}
+    .sub{
+      text-align:center;
+      color:var(--muted);
+      font-size: clamp(16px, 2.4vw, 20px);
+      line-height:1.7;
+      margin: 0 0 8px;
+    }
+    .time{
+      text-align:center;
+      color:var(--muted);
+      font-size: clamp(18px, 2.6vw, 22px);
+      margin: 6px 0 16px;
+    }
+
+    hr.sep{
+      border:none;
+      height:1px;
+      background: rgba(255,255,255,.12);
+      margin: 14px 0 18px;
+    }
+
+    .sectionTitle{
+      text-align:center;
+      font-size: 22px;
+      color: var(--muted);
+      font-weight: 800;
+      margin: 8px 0 14px;
+    }
+
+    .modeBox{
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px;
+      padding: 14px;
+      display:grid;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .modeRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      padding: 12px 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.06);
+      cursor:pointer;
+    }
+
+    .modeLeft{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .radio{
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 2px solid rgba(255,255,255,.45);
+      display:grid;
+      place-items:center;
+      flex: 0 0 auto;
+    }
+    .radio .dot{
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: transparent;
+    }
+    .modeRow.active .radio{
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(63,102,255,.22);
+    }
+    .modeRow.active .radio .dot{ background: var(--accent); }
+
+    .modeText{ min-width:0; }
+    .modeText b{
+      display:block;
+      font-size: 18px;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .modeText small{
+      display:block;
+      color: var(--muted2);
+      margin-top: 2px;
+      font-size: 13px;
+    }
+
+    .pill{
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      padding: 10px 12px;
+      border-radius: 16px;
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+    .pill select{
+      background: transparent;
+      border:none;
+      color: var(--white);
+      outline:none;
+      font-size: 16px;
+      font-weight: 800;
+      appearance: none;
+      padding: 0 6px;
+      cursor:pointer;
+    }
+    .pill option{ color:#000; }
+
+    .input{
+      width:100%;
+      border:none;
+      outline:none;
+      background: var(--input);
+      padding: 18px 16px;
+      border-radius: 22px;
+      font-size: 24px;
+      font-weight: 800;
+      text-align: right;
+      color:#111827;
+      box-shadow: inset 0 2px 0 rgba(0,0,0,.06);
+    }
+
+    .btn{
+      width:100%;
+      margin-top: 14px;
+      border:none;
+      outline:none;
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      color: white;
+      padding: 18px 16px;
+      border-radius: 24px;
+      font-size: 30px;
+      font-weight: 900;
+      cursor:pointer;
+      box-shadow: 0 18px 45px rgba(63,102,255,.35);
+      transition: transform .06s ease;
+    }
+    .btn:active{ transform: scale(.99); }
+
+    .result{
+      text-align:center;
+      margin-top: 18px;
+      color: #a9c5ff;
+      font-size: clamp(22px, 3.6vw, 34px);
+      line-height: 1.9;
+      font-weight: 900;
+    }
+    .result b{ color:#dbe8ff; }
+
+    .note{
+      margin-top: 10px;
+      text-align:center;
+      color: rgba(255,255,255,.55);
+      font-size: 14px;
+    }
+
+    .duaCard{
+      margin-top: 16px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 22px;
+      padding: 18px 14px;
+      text-align:center;
+    }
+    .duaTitle{
+      font-size: 22px;
+      font-weight: 900;
+      margin: 0 0 10px;
+      color: #e9f1ff;
+    }
+    .duaText{
+      margin:0;
+      font-size: 20px;
+      line-height: 1.9;
+      color: rgba(255,255,255,.90);
+      font-weight: 700;
+    }
+
+    .ytCard{
+      margin-top: 14px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 22px;
+      padding: 16px 14px 18px;
+      text-align:center;
+    }
+    .ytTitle{
+      margin:0 0 12px;
+      font-size: 20px;
+      font-weight: 900;
+      color:#e9f1ff;
+    }
+    .ytWrap{
+      width:100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 18px;
+      overflow:hidden;
+      background: rgba(0,0,0,.35);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    iframe{
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+    }
+
+    .footer{
+      margin-top: 16px;
+      text-align:center;
+      color: rgba(255,255,255,.55);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 420px){
+      .btn{ font-size: 28px; }
+      .input{ font-size: 22px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="title">برنامج ختم القرآن <span class="emoji">📖</span></div>
+      <div class="sub" id="hijriDate">—</div>
+      <div class="time" id="clock">—</div>
+
+      <hr class="sep">
+
+      <div class="sectionTitle">طريقة الحساب</div>
+
+      <div class="modeBox">
+        <div class="modeRow active" id="rowMonth">
+          <div class="modeLeft">
+            <div class="radio"><div class="dot"></div></div>
+            <div class="modeText">
+              <b>حسب الشهر الهجري (المتبقي)</b>
+              <small>يحسب الأيام المتبقية من الشهر الحالي تلقائيًا</small>
+            </div>
+          </div>
+          <div class="pill">📅</div>
+        </div>
+
+        <div class="modeRow" id="rowDays">
+          <div class="modeLeft">
+            <div class="radio"><div class="dot"></div></div>
+            <div class="modeText">
+              <b>حسب مدة بالأيام</b>
+              <small>اختر 15 أو 30 أو 60 يوم</small>
+            </div>
+          </div>
+          <div class="pill">
+            ⏳
+            <select id="daysSelect">
+              <option value="15">15 يوم</option>
+              <option value="30" selected>30 يوم</option>
+              <option value="60">60 يوم</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <input class="input" id="currentPage" inputmode="numeric" placeholder="اكتب رقم الصفحة اللي وصلت لها" />
+      <button class="btn" id="calcBtn">احسب الخطة</button>
+
+      <div class="result" id="result"></div>
+      <div class="note">ملاحظة: يعتمد الحساب على تاريخ/وقت جهازك.</div>
+
+      <div class="duaCard">
+        <div class="duaTitle">دعاء اليوم</div>
+        <p class="duaText" id="duaText">—</p>
+      </div>
+
+      <div class="ytCard">
+        <div class="ytTitle">البث المباشر</div>
+        <div class="ytWrap">
+          <iframe
+            id="ytFrame"
+            title="YouTube Live"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
+
+      <div class="footer">مع تحيات: المبرمج راعي المدبله 🔥💻</div>
+    </div>
+  </div>
+
+  <script>
+    const TOTAL_PAGES = 604;
+    let mode = "month"; // month | days
+
+    const YT_URL = "https://www.youtube.com/live/Cm1v4bteXbI?si=K5IIII-EJ8R4HQEb";
+
+    function extractYouTubeId(url){
+      try{
+        const u = new URL(url);
+        const liveMatch = u.pathname.match(/\/live\/([^\/]+)/);
+        if(liveMatch && liveMatch[1]) return liveMatch[1];
+
+        const v = u.searchParams.get("v");
+        if(v) return v;
+
+        if(u.hostname.includes("youtu.be")){
+          return u.pathname.replace("/","").trim();
+        }
+      }catch(e){}
+      return null;
+    }
+
+    function setYouTubeEmbed(){
+      const id = extractYouTubeId(YT_URL);
+      const frame = document.getElementById("ytFrame");
+      frame.src = id ? `https://www.youtube.com/embed/${id}` : "about:blank";
+    }
+
+    function getHijriText(now){
+      try{
+        return new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        }).format(now);
+      }catch(e){
+        return new Intl.DateTimeFormat("ar-SA-u-ca-islamic", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        }).format(now);
+      }
+    }
+
+    function updateDateTime(){
+      const now = new Date();
+
+      const timeStr = new Intl.DateTimeFormat("ar-SA", {
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit"
+      }).format(now);
+
+      document.getElementById("clock").textContent = `⏰ ${timeStr}`;
+      document.getElementById("hijriDate").textContent = `📅 ${getHijriText(now)}`;
+    }
+
+    function getHijriInfo(){
+      const now = new Date();
+      let formatter;
+      try{
+        formatter = new Intl.DateTimeFormat('en-TN-u-ca-islamic-umalqura', {
+          day: 'numeric', month: 'numeric', year: 'numeric'
+        });
+      }catch(e){
+        formatter = new Intl.DateTimeFormat('en-TN-u-ca-islamic', {
+          day: 'numeric', month: 'numeric', year: 'numeric'
+        });
+      }
+
+      const parts = formatter.formatToParts(now);
+      const day = parseInt(parts.find(p => p.type === 'day')?.value || "NaN", 10);
+      const month = parseInt(parts.find(p => p.type === 'month')?.value || "NaN", 10);
+      const year = parseInt(parts.find(p => p.type === 'year')?.value || "NaN", 10);
+
+      return { day, month, year, ok: Number.isFinite(day) && Number.isFinite(month) && Number.isFinite(year) };
+    }
+
+    function getHijriMonthLength(month){
+      return (month % 2 === 1) ? 30 : 29;
+    }
+
+    function getDaysRemainingInHijriMonthInclusive(){
+      const h = getHijriInfo();
+      if(!h.ok) return null;
+
+      const monthLen = getHijriMonthLength(h.month);
+      const remaining = monthLen - h.day + 1;
+      if(!Number.isFinite(remaining) || remaining < 1) return null;
+      return remaining;
+    }
+
+    const DUAS = [
+      "اللهم اجعلنا من أهل القرآن الذين هم أهلك وخاصتك، وارفعنا به درجات.",
+      "اللهم افتح لنا أبواب رحمتك، واغفر لنا ذنوبنا، واهدنا لأحسن الأعمال.",
+      "اللهم أعنّا على ذكرك وشكرك وحسن عبادتك.",
+      "اللهم ارزقنا الإخلاص في القول والعمل، وثبّتنا على طاعتك.",
+      "اللهم اجعل القرآن ربيع قلوبنا ونور صدورنا وجلاء أحزاننا.",
+      "اللهم اجعل لنا من كل همٍّ فرجًا ومن كل ضيقٍ مخرجًا.",
+      "اللهم وفّقنا لقيام الليل وتلاوة القرآن آناء الليل وأطراف النهار.",
+      "اللهم ارزقنا حسن الخاتمة واغفر لنا ولوالدينا وللمسلمين."
+    ];
+
+    function dayKeyLocal(){
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const da = String(d.getDate()).padStart(2,'0');
+      return `${y}-${m}-${da}`;
+    }
+
+    function updateDailyDua(){
+      const key = dayKeyLocal();
+      let h = 0;
+      for (let i=0;i<key.length;i++) h = (h*31 + key.charCodeAt(i)) >>> 0;
+      const idx = h % DUAS.length;
+      document.getElementById("duaText").textContent = DUAS[idx];
+    }
+
+    function setMode(m){
+      mode = m;
+      refreshModeUI();
+    }
+
+    function refreshModeUI(){
+      const rowMonth = document.getElementById("rowMonth");
+      const rowDays = document.getElementById("rowDays");
+      rowMonth.classList.toggle("active", mode === "month");
+      rowDays.classList.toggle("active", mode === "days");
+
+      const sel = document.getElementById("daysSelect");
+      sel.disabled = (mode !== "days");
+      sel.style.opacity = (mode !== "days") ? "0.5" : "1";
+    }
+
+    function calculatePlan(){
+      const current = parseInt(document.getElementById("currentPage").value, 10);
+
+      if(!Number.isFinite(current) || current < 1 || current > TOTAL_PAGES){
+        document.getElementById("result").innerHTML =
+          "⚠️ أدخل رقم صفحة صحيح بين <b>1</b> و <b>604</b>.";
+        return;
+      }
+
+      const remainingPages = TOTAL_PAGES - current;
+
+      let days = null;
+      if(mode === "days"){
+        days = parseInt(document.getElementById("daysSelect").value, 10);
+      }else{
+        days = getDaysRemainingInHijriMonthInclusive();
+      }
+
+      if(!Number.isFinite(days) || days === null || days < 1){
+        document.getElementById("result").innerHTML =
+          "⚠️ تعذر حساب أيام الشهر الهجري على هذا الجهاز.<br><span style='font-size:16px;color:rgba(255,255,255,.55)'>اختر (حسب مدة بالأيام) كحل بديل.</span>";
+        return;
+      }
+
+      const perDay = Math.ceil(remainingPages / days);
+      const daysLabel = (mode === "days")
+        ? `عدد الأيام: <b>${days}</b>`
+        : `عدد الأيام: <b>${days}</b> (هجري)`;
+
+      document.getElementById("result").innerHTML = `
+        <div>📘 الصفحات المتبقية: <b>${remainingPages}</b></div>
+        <div>📅 ${daysLabel}</div>
+        <div>📖 اقرأ يوميًا: <b>${perDay}</b> صفحة</div>
+        <div>✅ لتختم قبل نهاية المدة</div>
+      `;
+    }
+
+    document.getElementById("rowMonth").addEventListener("click", ()=>setMode("month"));
+    document.getElementById("rowDays").addEventListener("click", ()=>setMode("days"));
+    document.getElementById("daysSelect").addEventListener("change", refreshModeUI);
+
+    document.getElementById("calcBtn").addEventListener("click", calculatePlan);
+    document.getElementById("currentPage").addEventListener("keydown", (e)=>{
+      if(e.key === "Enter") calculatePlan();
+    });
+
+    refreshModeUI();
+    updateDateTime();
+    updateDailyDua();
+    setYouTubeEmbed();
+
+    setInterval(updateDateTime, 1000);
+    setInterval(updateDailyDua, 60 * 1000);
+  </script>
+</body>
+</html>
