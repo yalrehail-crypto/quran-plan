@@ -2,525 +2,562 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
   <title>لعبة رمضانية 3D</title>
   <style>
     :root{
-      --bg0:#070913;
-      --bg1:#0b1230;
-      --glass: rgba(255,255,255,.10);
+      --bg0:#05070d;
+      --bg1:#070b14;
+      --glass: rgba(255,255,255,.08);
       --stroke: rgba(255,255,255,.14);
       --text:#fff;
-      --muted: rgba(255,255,255,.78);
-      --gold1:#ffe6ad;
-      --gold2:#ffbf57;
-      --blue1:#4d79ff;
-      --blue2:#2b55ff;
-      --shadow: 0 26px 80px rgba(0,0,0,.55);
-      --r: 28px;
+      --muted: rgba(255,255,255,.75);
+      --goldA:#ffe6b0;
+      --goldB:#ffbf55;
+      --blueA:#4d79ff;
+      --blueB:#2b55ff;
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius: 26px;
     }
+
     *{box-sizing:border-box}
     body{
       margin:0;
-      min-height:100vh;
-      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
-      background: radial-gradient(900px 600px at 50% -200px, rgba(255,191,85,.14), transparent 65%),
-                  radial-gradient(900px 600px at 20% 20%, rgba(77,121,255,.14), transparent 65%),
-                  radial-gradient(900px 600px at 80% 40%, rgba(77,121,255,.10), transparent 65%),
-                  linear-gradient(180deg, var(--bg1), var(--bg0));
-      color:var(--text);
-      overflow:hidden;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    /* Canvas اللعبة */
-    #game{
-      position:fixed;
-      inset:0;
-      width:100vw;
       height:100vh;
-      display:block;
-      background: transparent;
-    }
-
-    /* طبقة واجهة */
-    .ui{
-      position:fixed;
-      inset: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;
-      pointer-events:none;
-      display:flex;
-      justify-content:center;
-      padding: 18px 14px 18px;
-    }
-
-    .panel{
-      pointer-events:auto;
-      width:min(720px, 95vw);
-      border-radius: 34px;
-      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
-      border:1px solid var(--stroke);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(16px);
       overflow:hidden;
-      position:relative;
+      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
+      background: radial-gradient(900px 520px at 70% 0%, rgba(255,191,85,.10), transparent 60%),
+                  radial-gradient(900px 520px at 20% 20%, rgba(77,121,255,.14), transparent 60%),
+                  linear-gradient(180deg, #0b1330, #05070d);
+      color:var(--text);
     }
 
-    .panel::before{
-      content:"";
-      position:absolute; inset:-2px;
-      background: radial-gradient(650px 220px at 50% 0%, rgba(255,191,85,.18), transparent 70%),
-                  radial-gradient(500px 240px at 20% 30%, rgba(77,121,255,.16), transparent 70%),
-                  radial-gradient(500px 240px at 80% 40%, rgba(77,121,255,.12), transparent 70%);
-      opacity:.9;
-      pointer-events:none;
-    }
+    /* Canvas */
+    #c{ position:fixed; inset:0; display:block; }
 
-    .top{
-      position:relative;
-      padding: 18px 18px 12px;
+    /* HUD */
+    .hud{
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      right: 14px;
       display:flex;
+      gap:10px;
       align-items:center;
       justify-content:space-between;
-      gap:10px;
+      z-index:10;
+      pointer-events:none;
     }
 
-    .title{
+    .pill{
+      pointer-events:auto;
       display:flex;
       align-items:center;
       gap:10px;
-      font-weight: 1000;
-      font-size: 20px;
-      letter-spacing:.2px;
-    }
-    .title .badge{
-      padding: 8px 12px;
+      padding: 10px 14px;
       border-radius: 999px;
-      background: linear-gradient(135deg, rgba(255,228,173,.35), rgba(255,191,85,.16));
-      border:1px solid rgba(255,228,173,.35);
-      color: rgba(255,255,255,.92);
-      box-shadow: 0 14px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.10);
-      font-size: 13px;
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      color: rgba(255,255,255,.90);
       font-weight: 900;
+      font-size: 14px;
+      user-select:none;
       white-space:nowrap;
-    }
-
-    .btnRow{
-      position:relative;
-      display:flex;
-      gap:10px;
-      align-items:center;
     }
 
     .btn{
       pointer-events:auto;
       border:0;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--blue1), var(--blue2));
-      color:#fff;
-      font-weight: 1000;
       cursor:pointer;
-      box-shadow: 0 18px 40px rgba(43,85,255,.28), 0 16px 30px rgba(0,0,0,.25),
-                  inset 0 1px 0 rgba(255,255,255,.12), inset 0 -10px 18px rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.12);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 1000;
+      color:#fff;
+      background: linear-gradient(135deg, var(--blueA), var(--blueB));
+      box-shadow: 0 14px 35px rgba(43,85,255,.25), var(--shadow);
     }
     .btn:active{ transform: translateY(1px); }
 
-    .btn.secondary{
-      background: linear-gradient(135deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
-      box-shadow: 0 18px 40px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.10);
-    }
-
-    .mid{
-      position:relative;
-      padding: 12px 18px 18px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      align-items:stretch;
-    }
-
-    .card{
-      border-radius: 22px;
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow: 0 16px 34px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.10);
-      padding: 12px 12px;
-      min-height: 86px;
-    }
-    .label{
-      color: rgba(255,255,255,.78);
-      font-weight: 900;
-      font-size: 13px;
-      margin-bottom: 6px;
-    }
-    .big{
-      font-weight: 1100;
-      font-size: 24px;
-      line-height:1.1;
-    }
     .hint{
-      margin-top: 4px;
-      color: rgba(255,255,255,.65);
-      font-size: 12.5px;
-      font-weight: 800;
-    }
-
-    .footer{
-      position:relative;
-      padding: 0 18px 18px;
+      position: fixed;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      z-index:10;
       display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      color: rgba(255,255,255,.65);
-      font-weight: 900;
-      font-size: 12.5px;
-    }
-
-    .toast{
-      position:fixed;
-      left:50%;
-      bottom: 22px;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,.55);
-      color:#fff;
-      padding: 10px 14px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.14);
-      box-shadow: 0 20px 50px rgba(0,0,0,.35);
-      backdrop-filter: blur(10px);
-      font-weight: 900;
-      opacity:0;
+      justify-content:center;
       pointer-events:none;
-      transition: opacity .2s ease, transform .2s ease;
     }
-    .toast.show{
-      opacity:1;
-      transform: translateX(-50%) translateY(-4px);
+    .hint .card{
+      pointer-events:auto;
+      width:min(720px, 100%);
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      color: var(--muted);
+      font-weight: 900;
+      text-align:center;
     }
 
-    @media (max-width:520px){
-      .mid{ grid-template-columns: 1fr; }
+    a.back{
+      pointer-events:auto;
+      text-decoration:none;
+      color:#fff;
+      opacity:.95;
     }
+
+    .centerToast{
+      position: fixed;
+      inset: 0;
+      display:none;
+      place-items:center;
+      z-index: 20;
+      background: rgba(0,0,0,.35);
+      backdrop-filter: blur(6px);
+    }
+    .centerToast.show{ display:grid; }
+    .centerToast .box{
+      width:min(520px, 92%);
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 26px 90px rgba(0,0,0,.65);
+      padding: 18px 16px;
+      text-align:center;
+    }
+    .centerToast h2{ margin:6px 0 8px; font-size: 22px; }
+    .centerToast p{ margin:0 0 12px; color: rgba(255,255,255,.75); font-weight: 800; }
+    .row{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
   </style>
 </head>
 <body>
 
-<canvas id="game"></canvas>
+<canvas id="c"></canvas>
 
-<div class="ui">
-  <div class="panel" id="panel">
-    <div class="top">
-      <div class="title">
-        🕌 <span>لعبة رمضانية</span>
-        <span class="badge">اجمع النجوم ✨</span>
-      </div>
-      <div class="btnRow">
-        <button class="btn secondary" onclick="goBack()">⬅️ رجوع</button>
-        <button class="btn" onclick="resetGame()">🔄 تصفير</button>
-      </div>
-    </div>
+<div class="hud">
+  <div class="pill"><a class="back" href="index.html">⬅️ رجوع</a></div>
+  <div class="pill" id="status">⭐ النقاط: <span id="score">0</span> — ⏳ الوقت: <span id="time">60</span>s</div>
+  <button class="btn" id="restart">إعادة</button>
+</div>
 
-    <div class="mid">
-      <div class="card">
-        <div class="label">المهمة</div>
-        <div class="big">التقط النجمة قبل أن تختفي ⭐</div>
-        <div class="hint">بالجوال: اضغط على النجمة — بالكمبيوتر: انقر عليها</div>
-      </div>
+<div class="hint">
+  <div class="card">
+    📱 بالجوال: اضغط على النجمة/الفانوس عندما يظهر — 🖥️ بالكمبيوتر: انقر بالماوس. (اسحب لتحريك الكاميرا)
+  </div>
+</div>
 
-      <div class="card">
-        <div class="label">النقاط</div>
-        <div class="big"><span id="score">0</span></div>
-        <div class="hint">أعلى نتيجة: <span id="best">0</span></div>
-      </div>
-    </div>
-
-    <div class="footer">
-      <div>اختياري: اضغط <b>Space</b> لتفعيل “وميض” ✨</div>
-      <div id="status">جاهز ✅</div>
+<div class="centerToast" id="end">
+  <div class="box">
+    <h2>🎉 انتهت الجولة</h2>
+    <p>نتيجتك: <b id="finalScore">0</b> نقطة</p>
+    <div class="row">
+      <button class="btn" id="again">العب مرة ثانية</button>
+      <a class="btn" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">رجوع للرئيسية</a>
     </div>
   </div>
 </div>
 
-<div class="toast" id="toast">أحسنت! ✨</div>
+<!-- Three.js (WebGL) -->
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
 
 <script>
-  // ===== إعدادات عامة =====
-  const canvas = document.getElementById("game");
-  const ctx = canvas.getContext("2d");
-  const scoreEl = document.getElementById("score");
-  const bestEl  = document.getElementById("best");
-  const statusEl= document.getElementById("status");
-  const toast   = document.getElementById("toast");
+(() => {
+  const canvas = document.getElementById('c');
 
-  let W=0, H=0, DPR=1;
-  function resize(){
-    DPR = Math.min(2, window.devicePixelRatio || 1);
-    W = Math.floor(window.innerWidth);
-    H = Math.floor(window.innerHeight);
-    canvas.width  = Math.floor(W * DPR);
-    canvas.height = Math.floor(H * DPR);
-    canvas.style.width  = W+"px";
-    canvas.style.height = H+"px";
-    ctx.setTransform(DPR,0,0,DPR,0,0);
+  // Renderer
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+  // Scene / Camera
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x05070d, 0.03);
+
+  const camera = new THREE.PerspectiveCamera(55, innerWidth/innerHeight, 0.1, 200);
+  camera.position.set(0, 6.5, 14);
+
+  // Lights (رمضاني ذهبي)
+  const hemi = new THREE.HemisphereLight(0x8fb3ff, 0x0b1020, 0.9);
+  scene.add(hemi);
+
+  const key = new THREE.DirectionalLight(0xfff2d5, 1.2);
+  key.position.set(8, 10, 6);
+  key.castShadow = false;
+  scene.add(key);
+
+  const warm = new THREE.PointLight(0xffc15a, 1.6, 40);
+  warm.position.set(0, 6, 0);
+  scene.add(warm);
+
+  // Ground (أرضية مع لمعة)
+  const groundGeo = new THREE.PlaneGeometry(80, 80, 1, 1);
+  const groundMat = new THREE.MeshStandardMaterial({
+    color: 0x0b1330,
+    metalness: 0.25,
+    roughness: 0.45,
+    emissive: 0x05070d,
+    emissiveIntensity: 0.35
+  });
+  const ground = new THREE.Mesh(groundGeo, groundMat);
+  ground.rotation.x = -Math.PI/2;
+  ground.position.y = -0.6;
+  scene.add(ground);
+
+  // Subtle floor glow ring
+  const ringGeo = new THREE.RingGeometry(6, 10, 64);
+  const ringMat = new THREE.MeshBasicMaterial({ color: 0xffc15a, transparent:true, opacity:0.08, side:THREE.DoubleSide });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.rotation.x = -Math.PI/2;
+  ring.position.y = -0.58;
+  scene.add(ring);
+
+  // Moon (قمر 3D)
+  const moon = new THREE.Mesh(
+    new THREE.SphereGeometry(1.8, 48, 48),
+    new THREE.MeshStandardMaterial({
+      color: 0xffe6b0,
+      metalness: 0.65,
+      roughness: 0.25,
+      emissive: 0xffc15a,
+      emissiveIntensity: 0.18
+    })
+  );
+  moon.position.set(-6, 10.5, -22);
+  scene.add(moon);
+
+  // Crescent cut (هلال)
+  const crescent = new THREE.Mesh(
+    new THREE.SphereGeometry(1.65, 48, 48),
+    new THREE.MeshStandardMaterial({ color: 0x05070d, roughness: 1, metalness: 0 })
+  );
+  crescent.position.set(-5.35, 10.75, -21.4);
+  scene.add(crescent);
+
+  // Mosque silhouette (مسجد بسيط 3D)
+  function addMosque(){
+    const g = new THREE.Group();
+
+    const base = new THREE.Mesh(
+      new THREE.BoxGeometry(10, 2.2, 3.6),
+      new THREE.MeshStandardMaterial({ color: 0x0b1020, roughness: 0.7, metalness: 0.1 })
+    );
+    base.position.set(0, 0.6, -18);
+    g.add(base);
+
+    const dome = new THREE.Mesh(
+      new THREE.SphereGeometry(1.8, 32, 32, 0, Math.PI*2, 0, Math.PI/2),
+      new THREE.MeshStandardMaterial({ color: 0x0b1020, roughness: 0.6, metalness: 0.15 })
+    );
+    dome.position.set(0, 2.0, -18);
+    g.add(dome);
+
+    const towerMat = new THREE.MeshStandardMaterial({ color: 0x0b1020, roughness: 0.65, metalness: 0.1 });
+    const min1 = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.75, 5.2, 18), towerMat);
+    min1.position.set(-4.2, 2.1, -18);
+    g.add(min1);
+
+    const min2 = min1.clone();
+    min2.position.set(4.2, 2.1, -18);
+    g.add(min2);
+
+    // Golden rim light behind mosque
+    const glow = new THREE.PointLight(0xffc15a, 2.4, 35);
+    glow.position.set(0, 3.5, -17.2);
+    g.add(glow);
+
+    scene.add(g);
   }
-  window.addEventListener("resize", resize);
-  resize();
+  addMosque();
 
-  // ===== خلفية نجوم متحركة (بارالاكس) =====
-  const dust = [];
-  function seedDust(){
-    dust.length = 0;
-    const n = Math.floor((W*H) / 18000);
-    for(let i=0;i<n;i++){
-      dust.push({
-        x: Math.random()*W,
-        y: Math.random()*H,
-        r: 0.6 + Math.random()*1.8,
-        a: 0.18 + Math.random()*0.35,
-        s: 0.10 + Math.random()*0.35
-      });
-    }
+  // Stars field (نجوم خلفية)
+  const starGeo = new THREE.BufferGeometry();
+  const starCount = 900;
+  const pos = new Float32Array(starCount * 3);
+  for(let i=0;i<starCount;i++){
+    pos[i*3+0] = (Math.random()-0.5)*160;
+    pos[i*3+1] = Math.random()*70 + 3;
+    pos[i*3+2] = (Math.random()-0.5)*160 - 40;
   }
-  seedDust();
+  starGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.06, transparent:true, opacity:0.8 });
+  const stars = new THREE.Points(starGeo, starMat);
+  scene.add(stars);
 
-  // ===== نجمة الهدف =====
-  let score = 0;
-  let best = Number(localStorage.getItem("ramadan_best") || 0);
-  bestEl.textContent = best;
+  // Lanterns (فوانيس مضيئة 3D)
+  function makeLantern(){
+    const g = new THREE.Group();
 
-  let blink = false;
+    const frameMat = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, metalness: 0.5, roughness: 0.35 });
+    const glassMat = new THREE.MeshStandardMaterial({
+      color: 0xffe6b0,
+      metalness: 0.1,
+      roughness: 0.12,
+      transparent:true,
+      opacity:0.45,
+      emissive: 0xffc15a,
+      emissiveIntensity: 0.6
+    });
 
-  const star = {
-    x: W*0.5,
-    y: H*0.62,
-    r: 18,
-    born: 0,
-    life: 2600, // ms
-    vx: 0,
-    vy: 0,
-    alive: true
-  };
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.65, 1.8, 14), frameMat);
+    g.add(body);
 
+    const glass = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.45, 1.3, 14), glassMat);
+    glass.position.y = 0.02;
+    g.add(glass);
+
+    const cap = new THREE.Mesh(new THREE.ConeGeometry(0.7, 0.6, 14), frameMat);
+    cap.position.y = 1.2;
+    g.add(cap);
+
+    const base = new THREE.Mesh(new THREE.ConeGeometry(0.65, 0.5, 14), frameMat);
+    base.position.y = -1.1;
+    g.add(base);
+
+    const light = new THREE.PointLight(0xffc15a, 1.4, 10);
+    light.position.y = 0.2;
+    g.add(light);
+
+    return g;
+  }
+
+  const lanterns = new THREE.Group();
+  for(let i=0;i<7;i++){
+    const L = makeLantern();
+    const a = (i/7) * Math.PI*2;
+    const r = 7.5;
+    L.position.set(Math.cos(a)*r, 2.8 + Math.random()*0.8, Math.sin(a)*r - 2);
+    L.rotation.y = Math.random()*Math.PI;
+    lanterns.add(L);
+  }
+  scene.add(lanterns);
+
+  // Collectibles (نجمة تجمعها)
+  const pickables = [];
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+
+  function makeStar(){
+    // نستخدم Octahedron مع material ذهبي + glow
+    const star = new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.42, 0),
+      new THREE.MeshStandardMaterial({
+        color: 0xffe6b0,
+        metalness: 0.9,
+        roughness: 0.15,
+        emissive: 0xffc15a,
+        emissiveIntensity: 0.55
+      })
+    );
+
+    // هالة بسيطة حول النجمة
+    const halo = new THREE.Mesh(
+      new THREE.SphereGeometry(0.72, 18, 18),
+      new THREE.MeshBasicMaterial({ color: 0xffc15a, transparent:true, opacity:0.14 })
+    );
+    star.add(halo);
+
+    star.userData.vy = 0.0;
+    star.userData.spin = (Math.random()*0.8 + 0.2) * (Math.random()<0.5 ? -1 : 1);
+    return star;
+  }
+
+  let currentStar = null;
   function spawnStar(){
-    const safeTop = 170; // عشان ما تطلع تحت اللوحة
-    const safeBottom = 90;
-    star.x = 60 + Math.random()*(W-120);
-    star.y = safeTop + Math.random()*(H - safeTop - safeBottom);
-    star.r = 16 + Math.random()*10;
-    star.born = performance.now();
-    star.life = 2200 + Math.random()*2200;
-    star.vx = (-0.35 + Math.random()*0.7);
-    star.vy = (-0.25 + Math.random()*0.5);
-    star.alive = true;
-    statusEl.textContent = "النجمة ظهرت ⭐";
-  }
-  spawnStar();
+    if(currentStar) scene.remove(currentStar);
 
-  // ===== مؤثرات (شرر/وميض) =====
-  const sparks = [];
-  function addSparks(x,y){
-    for(let i=0;i<22;i++){
-      sparks.push({
-        x,y,
-        vx:(-2.2+Math.random()*4.4),
-        vy:(-2.2+Math.random()*4.4),
-        r: 1.2 + Math.random()*2.2,
-        a: 1,
-        da: 0.02 + Math.random()*0.04
+    currentStar = makeStar();
+    currentStar.position.set(
+      (Math.random()-0.5)*10,
+      1.2 + Math.random()*3.2,
+      (Math.random()-0.5)*10 - 1
+    );
+    scene.add(currentStar);
+    pickables.length = 0;
+    pickables.push(currentStar);
+  }
+
+  // Particles burst عند الالتقاط
+  function burst(position){
+    const count = 36;
+    const g = new THREE.Group();
+    for(let i=0;i<count;i++){
+      const p = new THREE.Mesh(
+        new THREE.SphereGeometry(0.06, 10, 10),
+        new THREE.MeshBasicMaterial({ color: 0xffc15a, transparent:true, opacity:0.9 })
+      );
+      p.position.copy(position);
+      p.userData.v = new THREE.Vector3(
+        (Math.random()-0.5)*2.4,
+        (Math.random())*2.4,
+        (Math.random()-0.5)*2.4
+      );
+      g.add(p);
+    }
+    scene.add(g);
+
+    let t = 0;
+    const id = setInterval(()=>{
+      t += 1;
+      g.children.forEach(ch=>{
+        ch.position.addScaledVector(ch.userData.v, 0.04);
+        ch.material.opacity *= 0.94;
       });
-    }
-  }
-
-  function showToast(txt){
-    toast.textContent = txt;
-    toast.classList.add("show");
-    clearTimeout(showToast._t);
-    showToast._t = setTimeout(()=>toast.classList.remove("show"), 700);
-  }
-
-  // ===== رسم النجمة (شكل 3D) =====
-  function drawStar3D(x,y,r,t){
-    // هالة ذهبية
-    const glow = ctx.createRadialGradient(x,y,0,x,y,r*3.2);
-    glow.addColorStop(0, `rgba(255,191,85,${0.40 + 0.15*Math.sin(t*0.008)})`);
-    glow.addColorStop(1, `rgba(255,191,85,0)`);
-    ctx.fillStyle = glow;
-    ctx.beginPath();
-    ctx.arc(x,y,r*3.0,0,Math.PI*2);
-    ctx.fill();
-
-    // جسم النجمة
-    const g = ctx.createLinearGradient(x-r,y-r,x+r,y+r);
-    g.addColorStop(0, "rgba(255,230,173,0.95)");
-    g.addColorStop(0.5, "rgba(255,191,85,0.95)");
-    g.addColorStop(1, "rgba(184,122,37,0.92)");
-    ctx.fillStyle = g;
-
-    ctx.beginPath();
-    const spikes = 5;
-    let rot = Math.PI/2 * 3;
-    let step = Math.PI / spikes;
-    let outer = r;
-    let inner = r*0.48;
-    ctx.moveTo(x, y - outer);
-    for (let i=0;i<spikes;i++){
-      ctx.lineTo(x + Math.cos(rot) * outer, y + Math.sin(rot) * outer);
-      rot += step;
-      ctx.lineTo(x + Math.cos(rot) * inner, y + Math.sin(rot) * inner);
-      rot += step;
-    }
-    ctx.closePath();
-    ctx.fill();
-
-    // لمعان 3D
-    ctx.strokeStyle = "rgba(255,255,255,.35)";
-    ctx.lineWidth = 1.2;
-    ctx.stroke();
-
-    // نقطة لمعان
-    ctx.fillStyle = "rgba(255,255,255,.55)";
-    ctx.beginPath();
-    ctx.arc(x-r*0.25, y-r*0.35, r*0.22, 0, Math.PI*2);
-    ctx.fill();
-  }
-
-  // ===== تحديث ورسم =====
-  function loop(t){
-    // مسح + خلفية ضبابية خفيفة
-    ctx.clearRect(0,0,W,H);
-
-    // غبار النجوم بالخلف
-    for(const p of dust){
-      p.y += p.s;
-      if(p.y > H+10){ p.y = -10; p.x = Math.random()*W; }
-      ctx.fillStyle = `rgba(255,255,255,${p.a})`;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-      ctx.fill();
-    }
-
-    // “وميض” اختياري
-    if(blink){
-      ctx.fillStyle = "rgba(255,191,85,.04)";
-      ctx.fillRect(0,0,W,H);
-    }
-
-    // حركة النجمة وعمرها
-    if(star.alive){
-      star.x += star.vx;
-      star.y += star.vy;
-
-      // ارتداد خفيف داخل الشاشة
-      if(star.x < 30 || star.x > W-30) star.vx *= -1;
-      if(star.y < 140 || star.y > H-60) star.vy *= -1;
-
-      // مؤشر عمر
-      const age = t - star.born;
-      const left = 1 - (age / star.life);
-      if(left <= 0){
-        star.alive = false;
-        statusEl.textContent = "فاتتك! حاول مرة ثانية 😅";
-        setTimeout(spawnStar, 650);
-      }else{
-        // رسم النجمة
-        drawStar3D(star.x, star.y, star.r*(0.92 + 0.08*Math.sin(t*0.012)), t);
-
-        // حلقة زمنية حولها
-        ctx.strokeStyle = `rgba(255,255,255,${0.22 + 0.18*Math.sin(t*0.01)})`;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.r*2.0, -Math.PI/2, (-Math.PI/2) + (Math.PI*2*left));
-        ctx.stroke();
+      if(t > 40){
+        clearInterval(id);
+        scene.remove(g);
       }
-    }
-
-    // الشرر
-    for(let i=sparks.length-1;i>=0;i--){
-      const s = sparks[i];
-      s.x += s.vx;
-      s.y += s.vy;
-      s.vx *= 0.98;
-      s.vy *= 0.98;
-      s.a -= s.da;
-      if(s.a <= 0){ sparks.splice(i,1); continue; }
-      ctx.fillStyle = `rgba(255,191,85,${s.a})`;
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-      ctx.fill();
-    }
-
-    requestAnimationFrame(loop);
-  }
-  requestAnimationFrame(loop);
-
-  // ===== التقاط النقر/اللمس =====
-  function hitTest(x,y){
-    const dx = x - star.x;
-    const dy = y - star.y;
-    return (dx*dx + dy*dy) <= (star.r*star.r*4.0);
+    }, 16);
   }
 
-  function handleTap(clientX, clientY){
-    const x = clientX;
-    const y = clientY;
+  // Simple camera orbit via drag (بدون مكتبات)
+  let dragging = false;
+  let lastX=0, lastY=0;
+  let yaw = 0, pitch = -0.15;
+  function applyCam(){
+    const radius = 14;
+    const x = Math.sin(yaw)*Math.cos(pitch)*radius;
+    const y = 6.2 + Math.sin(pitch)*5;
+    const z = Math.cos(yaw)*Math.cos(pitch)*radius;
+    camera.position.set(x, y, z);
+    camera.lookAt(0, 2.2, -2);
+  }
+  applyCam();
 
-    if(star.alive && hitTest(x,y)){
-      star.alive = false;
-      score++;
-      scoreEl.textContent = score;
-      addSparks(star.x, star.y);
-      statusEl.textContent = "التقطتها! ✨";
-      showToast("أحسنت! +1 ⭐");
+  function onDown(e){
+    dragging = true;
+    const t = e.touches ? e.touches[0] : e;
+    lastX = t.clientX; lastY = t.clientY;
+  }
+  function onMove(e){
+    if(!dragging) return;
+    const t = e.touches ? e.touches[0] : e;
+    const dx = (t.clientX - lastX);
+    const dy = (t.clientY - lastY);
+    lastX = t.clientX; lastY = t.clientY;
+    yaw -= dx * 0.0045;
+    pitch -= dy * 0.0035;
+    pitch = Math.max(-0.55, Math.min(0.22, pitch));
+    applyCam();
+  }
+  function onUp(){ dragging = false; }
 
-      if(score > best){
-        best = score;
-        localStorage.setItem("ramadan_best", best);
-        bestEl.textContent = best;
-        showToast("رقم قياسي جديد! 🏆");
-      }
-      setTimeout(spawnStar, 480);
+  canvas.addEventListener('mousedown', onDown);
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onUp);
+
+  canvas.addEventListener('touchstart', onDown, {passive:true});
+  window.addEventListener('touchmove', onMove, {passive:true});
+  window.addEventListener('touchend', onUp, {passive:true});
+
+  // Click/tap to collect
+  function pickAt(clientX, clientY){
+    const rect = canvas.getBoundingClientRect();
+    pointer.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -(((clientY - rect.top) / rect.height) * 2 - 1);
+    raycaster.setFromCamera(pointer, camera);
+    const hits = raycaster.intersectObjects(pickables, true);
+    if(hits.length){
+      // اجمع
+      score += 1;
+      document.getElementById('score').textContent = score;
+      burst(currentStar.position.clone());
+      spawnStar();
     }
   }
 
-  // لمس للجوال
-  window.addEventListener("touchstart", (e)=>{
-    const t = e.touches[0];
-    handleTap(t.clientX, t.clientY);
+  canvas.addEventListener('click', (e)=>{
+    // لو المستخدم كان يسحب كثير، نتجاهل الكليك (حل بسيط)
+    pickAt(e.clientX, e.clientY);
+  });
+
+  canvas.addEventListener('touchend', (e)=>{
+    const t = e.changedTouches && e.changedTouches[0];
+    if(!t) return;
+    pickAt(t.clientX, t.clientY);
   }, {passive:true});
 
-  // ماوس للكمبيوتر
-  window.addEventListener("mousedown", (e)=>{
-    handleTap(e.clientX, e.clientY);
-  });
+  // UI logic
+  const end = document.getElementById('end');
+  const finalScore = document.getElementById('finalScore');
+  const btnRestart = document.getElementById('restart');
+  const btnAgain = document.getElementById('again');
 
-  // Space للوميض
-  window.addEventListener("keydown", (e)=>{
-    if(e.code === "Space"){
-      blink = !blink;
-      statusEl.textContent = blink ? "الوميض شغال ✨" : "الوميض مطفي ✅";
-    }
-  });
+  let score = 0;
+  let timeLeft = 60;
+  let playing = true;
 
-  // أزرار
-  window.resetGame = function(){
+  function reset(){
     score = 0;
-    scoreEl.textContent = score;
-    sparks.length = 0;
+    timeLeft = 60;
+    playing = true;
+    end.classList.remove('show');
+    document.getElementById('score').textContent = score;
+    document.getElementById('time').textContent = timeLeft;
     spawnStar();
-    showToast("تم التصفير ✅");
   }
 
-  window.goBack = function(){
-    // يرجع للرئيسية
-    window.location.href = "index.html";
-  }
+  btnRestart.addEventListener('click', reset);
+  btnAgain.addEventListener('click', reset);
 
-  // إعادة توليد الغبار عند تغيير المقاس
-  window.addEventListener("resize", ()=>{
-    seedDust();
+  // Timer
+  setInterval(()=>{
+    if(!playing) return;
+    timeLeft -= 1;
+    document.getElementById('time').textContent = timeLeft;
+    if(timeLeft <= 0){
+      playing = false;
+      finalScore.textContent = score;
+      end.classList.add('show');
+    }
+  }, 1000);
+
+  // Animate
+  const clock = new THREE.Clock();
+  spawnStar();
+
+  function animate(){
+    requestAnimationFrame(animate);
+
+    const t = clock.getElapsedTime();
+
+    // نجوم الخلفية تتحرك خفيف
+    stars.rotation.y = t * 0.02;
+
+    // فوانيس تتمايل
+    lanterns.children.forEach((l, i)=>{
+      l.rotation.z = Math.sin(t*0.9 + i) * 0.08;
+      l.position.y += Math.sin(t*0.8 + i) * 0.002;
+    });
+
+    // النجمة الحالية: دوران + وميض + حركة لطيفة
+    if(currentStar){
+      currentStar.rotation.y += 0.03 * currentStar.userData.spin;
+      currentStar.rotation.x += 0.01;
+      const pulse = 0.65 + Math.sin(t*4.2)*0.25;
+      currentStar.material.emissiveIntensity = 0.35 + pulse*0.55;
+      currentStar.position.y += Math.sin(t*3.0) * 0.0025;
+    }
+
+    ring.material.opacity = 0.06 + Math.sin(t*1.2)*0.02;
+
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  // Resize
+  addEventListener('resize', ()=>{
+    renderer.setSize(innerWidth, innerHeight);
+    camera.aspect = innerWidth/innerHeight;
+    camera.updateProjectionMatrix();
   });
+
+})();
 </script>
 
 </body>
