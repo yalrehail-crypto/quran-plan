@@ -7,22 +7,23 @@
 
   <style>
     :root{
-      --bg1:#020617;
-      --bg2:#071a3a;
-      --card1: rgba(10, 25, 55, .78);
-      --card2: rgba(7, 17, 38, .72);
-      --stroke: rgba(255,255,255,.10);
+      --bg1:#070b12;
+      --bg2:#0b1020;
+      --card1: rgba(10, 16, 32, .68);
+      --card2: rgba(6, 10, 20, .58);
+      --stroke: rgba(255,215,140,.16);
 
-      --text:#ffffff;
-      --muted: rgba(255,255,255,.72);
+      --text:#fff;
+      --muted: rgba(255,255,255,.75);
 
-      --accent1:#3f66ff;
-      --accent2:#2b4dd6;
+      --gold:#ffd37b;
+      --gold2:#ffb84a;
+      --gold3:#c88a2e;
 
-      --gold1:#ffd76a;
-      --gold2:#f7b500;
+      --blue1:#3f66ff;
+      --blue2:#2b4dd6;
 
-      --shadow: 0 22px 60px rgba(0,0,0,.45);
+      --shadow: 0 22px 70px rgba(0,0,0,.55);
       --radius: 30px;
     }
 
@@ -30,17 +31,19 @@
     body{
       margin:0;
       font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
-      background: radial-gradient(1100px 700px at 50% -120px, #12356e 0%, var(--bg2) 40%, var(--bg1) 78%, #000 100%);
-      color:var(--text);
       min-height:100vh;
+      background:
+        radial-gradient(900px 600px at 50% -140px, rgba(255,211,123,.10), transparent 60%),
+        radial-gradient(1200px 800px at 50% 120%, rgba(63,102,255,.10), transparent 55%),
+        linear-gradient(180deg, var(--bg2), var(--bg1));
+      color:var(--text);
       display:flex;
-      align-items:flex-start;
       justify-content:center;
       padding:26px 14px 70px;
       overflow-x:hidden;
     }
 
-    /* ===== خلفية رمضان ===== */
+    /* ===== خلفية نجوم خفيفة ===== */
     .fx{
       position:fixed;
       inset:0;
@@ -48,131 +51,79 @@
       pointer-events:none;
       overflow:hidden;
     }
-
-    /* نجوم */
     .stars{
       position:absolute; inset:0;
       background-image:
-        radial-gradient(2px 2px at 12% 18%, rgba(255,255,255,.95), transparent),
-        radial-gradient(1.8px 1.8px at 22% 68%, rgba(255,255,255,.8), transparent),
-        radial-gradient(2px 2px at 36% 34%, rgba(255,255,255,.92), transparent),
-        radial-gradient(1.8px 1.8px at 49% 82%, rgba(255,255,255,.7), transparent),
-        radial-gradient(2px 2px at 62% 24%, rgba(255,255,255,.9), transparent),
-        radial-gradient(1.8px 1.8px at 78% 52%, rgba(255,255,255,.85), transparent),
-        radial-gradient(2px 2px at 88% 14%, rgba(255,255,255,.95), transparent),
-        radial-gradient(1.8px 1.8px at 92% 78%, rgba(255,255,255,.75), transparent);
-      opacity:.9;
+        radial-gradient(2px 2px at 12% 18%, rgba(255,255,255,.9), transparent),
+        radial-gradient(1.8px 1.8px at 22% 68%, rgba(255,255,255,.7), transparent),
+        radial-gradient(2px 2px at 36% 34%, rgba(255,255,255,.85), transparent),
+        radial-gradient(1.6px 1.6px at 49% 82%, rgba(255,255,255,.6), transparent),
+        radial-gradient(2px 2px at 62% 24%, rgba(255,255,255,.85), transparent),
+        radial-gradient(1.6px 1.6px at 78% 52%, rgba(255,255,255,.75), transparent),
+        radial-gradient(2px 2px at 88% 14%, rgba(255,255,255,.9), transparent),
+        radial-gradient(1.6px 1.6px at 92% 78%, rgba(255,255,255,.6), transparent);
+      opacity:.55;
       animation: twinkle 3.2s ease-in-out infinite alternate;
     }
-    @keyframes twinkle{
-      from{opacity:.55; filter: blur(.25px);}
-      to{opacity:1; filter: blur(0px);}
-    }
+    @keyframes twinkle{ from{opacity:.38} to{opacity:.75} }
 
-    /* هالة */
-    .glow{
-      position:absolute;
-      left:50%;
-      top:40px;
-      width:520px;
-      height:520px;
-      transform:translateX(-50%);
-      background: radial-gradient(circle, rgba(255,215,106,.18), transparent 60%);
-      filter: blur(2px);
-      opacity:.7;
-    }
-
-    /* هلال */
-    .moon{
-      position:absolute;
-      top:68px;
-      left:50%;
-      width:130px;
-      height:130px;
-      transform: translateX(-50%);
-      border-radius:50%;
-      background: radial-gradient(circle at 30% 30%, #fff, var(--gold1));
-      box-shadow: 0 0 70px rgba(255,215,106,.7);
-      opacity:.95;
-    }
-    .moon::after{
-      content:"";
-      position:absolute;
-      right:24px; top:0;
-      width:130px; height:130px;
-      border-radius:50%;
-      background: rgba(7,26,58,.98);
-    }
-
-    /* ===== بخور (دخان) ===== */
+    /* ===== دخان بخور خفيف ===== */
     .incense{
       position:absolute;
-      bottom:-40px;
       left:50%;
-      width:520px;
-      height:520px;
+      bottom:-120px;
+      width:560px;
+      height:560px;
       transform:translateX(-50%);
-      filter: blur(1px);
-      opacity:.55;
+      opacity:.38;
       mix-blend-mode: screen;
+      filter: blur(1px);
     }
-
     .smoke{
       position:absolute;
-      bottom:0;
       left:50%;
-      width:220px;
+      bottom:0;
+      width:240px;
       height:320px;
       transform:translateX(-50%);
+      border-radius:999px;
       background:
-        radial-gradient(closest-side, rgba(255,255,255,.22), transparent 60%),
-        radial-gradient(closest-side, rgba(255,215,106,.14), transparent 62%);
-      border-radius: 999px;
-      animation: smokeUp 7s ease-in-out infinite;
+        radial-gradient(closest-side, rgba(255,255,255,.20), transparent 62%),
+        radial-gradient(closest-side, rgba(255,211,123,.16), transparent 60%);
+      animation: smokeUp 7.5s ease-in-out infinite;
     }
-    .smoke.s2{
-      width:260px; height:360px;
-      opacity:.65;
-      animation-duration: 9s;
-      animation-delay: -2s;
-    }
-    .smoke.s3{
-      width:180px; height:300px;
-      opacity:.5;
-      animation-duration: 8s;
-      animation-delay: -4s;
-    }
+    .smoke.s2{ width:290px; height:380px; opacity:.55; animation-duration:9.5s; animation-delay:-2.2s; }
+    .smoke.s3{ width:200px; height:300px; opacity:.40; animation-duration:8.2s; animation-delay:-4.2s; }
 
     @keyframes smokeUp{
       0%   { transform:translateX(-50%) translateY(0) scale(.95); opacity:.0; filter: blur(2px); }
-      10%  { opacity:.55; }
-      40%  { transform:translateX(-50%) translateY(-120px) scale(1.02); opacity:.55; }
-      70%  { transform:translateX(-50%) translateY(-240px) scale(1.08); opacity:.35; }
-      100% { transform:translateX(-50%) translateY(-320px) scale(1.12); opacity:0; }
+      12%  { opacity:.55; }
+      45%  { transform:translateX(-50%) translateY(-140px) scale(1.02); opacity:.45; }
+      75%  { transform:translateX(-50%) translateY(-270px) scale(1.08); opacity:.25; }
+      100% { transform:translateX(-50%) translateY(-360px) scale(1.12); opacity:0; }
     }
 
-    /* ===== الكرت ===== */
     .wrap{ width:min(690px, 100%); }
 
     .card{
+      position:relative;
       background: linear-gradient(180deg, var(--card1), var(--card2));
-      border: 1px solid var(--stroke);
+      border: 1px solid rgba(255,215,140,.14);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 26px 18px 26px;
-      position:relative;
+      padding: 28px 18px 26px;
       overflow:hidden;
       backdrop-filter: blur(10px);
     }
 
-    /* إطار ذهبي رفيع */
+    /* إطار ذهبي */
     .card::before{
       content:"";
       position:absolute;
       inset:-1px;
       border-radius: var(--radius);
       padding:1px;
-      background: linear-gradient(90deg, rgba(255,215,106,.40), rgba(63,102,255,.22), rgba(255,215,106,.35));
+      background: linear-gradient(90deg, rgba(255,211,123,.55), rgba(255,184,74,.20), rgba(255,211,123,.50));
       -webkit-mask:
         linear-gradient(#000 0 0) content-box,
         linear-gradient(#000 0 0);
@@ -182,67 +133,94 @@
       pointer-events:none;
     }
 
-    /* عنوان رمضان فقط */
-    .ramadanTitle{
-      text-align:center;
-      font-weight: 1000;
-      font-size: clamp(34px, 6vw, 52px);
-      margin: 10px 0 16px;
-      color: transparent;
-      background: linear-gradient(180deg, #fff, rgba(255,255,255,.75));
-      -webkit-background-clip: text;
-      background-clip: text;
-      letter-spacing:.2px;
+    /* زخرفة علوية (مثل الصورة) */
+    .orn{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.95;
+    }
+    .orn svg{
+      position:absolute;
+      top:10px;
+      width:100%;
+      height:190px;
     }
 
-    .ramadanBadge{
-      display:flex;
-      justify-content:center;
-      margin-top:-4px;
-      margin-bottom: 18px;
+    /* الفوانيس */
+    .lanterns{
+      position:absolute;
+      top:-8px;
+      left:0; right:0;
+      height:210px;
+      pointer-events:none;
+      opacity:.95;
     }
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding: 12px 16px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      color: rgba(255,255,255,.82);
-      font-weight: 900;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 10px 26px rgba(0,0,0,.25);
+    .lantern{
+      position:absolute;
+      top:0;
+      width:90px;
+      height:190px;
+      filter: drop-shadow(0 20px 30px rgba(0,0,0,.35));
+      animation: sway 4.5s ease-in-out infinite;
+      transform-origin: top center;
     }
-    .badge .gold{
-      color: var(--gold1);
-      text-shadow: 0 0 18px rgba(255,215,106,.55);
+    .lantern.l2{ width:72px; height:170px; opacity:.92; animation-duration:5.2s; }
+    .lantern.l3{ width:62px; height:160px; opacity:.85; animation-duration:5.8s; }
+    @keyframes sway{
+      0%{ transform: rotate(-2.5deg); }
+      50%{ transform: rotate(2.5deg); }
+      100%{ transform: rotate(-2.5deg); }
     }
 
-    .timeRow{
+    /* هلال صغير */
+    .moon{
+      position:absolute;
+      top:126px;
+      left:50%;
+      width:78px;
+      height:78px;
+      transform:translateX(-50%);
+      border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, #fff, var(--gold));
+      box-shadow: 0 0 40px rgba(255,211,123,.55);
+    }
+    .moon:after{
+      content:"";
+      position:absolute;
+      right:16px; top:0;
+      width:78px; height:78px;
+      border-radius:50%;
+      background: rgba(9,14,26,.95);
+    }
+
+    /* التاريخ والوقت (نخليهم صغيرين) */
+    .miniRow{
       display:flex;
       justify-content:center;
       gap:10px;
       flex-wrap:wrap;
-      margin: 0 0 18px;
-      color: rgba(255,255,255,.78);
-      font-weight:900;
-      font-size: 16px;
+      margin-top: 150px; /* مساحة للزخرفة والفوانيس */
+      margin-bottom: 16px;
     }
     .chip{
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      padding: 11px 14px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,215,140,.18);
+      padding: 10px 14px;
       border-radius: 999px;
+      color: rgba(255,255,255,.80);
+      font-weight: 900;
       backdrop-filter: blur(8px);
+      box-shadow: 0 12px 26px rgba(0,0,0,.25);
+      font-size: 15px;
     }
 
+    /* الأزرار */
     .grid{
       display:grid;
       gap:18px;
       margin-top: 6px;
     }
-
     .btn{
       display:flex;
       align-items:center;
@@ -253,7 +231,7 @@
       outline:none;
       padding: 24px 18px;
       border-radius: 28px;
-      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      background: linear-gradient(135deg, var(--blue1), var(--blue2));
       color:white;
       font-size: clamp(22px, 4.8vw, 36px);
       font-weight: 1000;
@@ -266,31 +244,25 @@
     }
     .btn:active{ transform: scale(.99); }
     .btn:hover{ filter: brightness(1.05); }
-
-    /* لمعان بسيط على الزر */
     .btn::after{
       content:"";
       position:absolute;
       top:-60px;
-      left:-40%;
-      width: 40%;
-      height: 220%;
+      left:-60%;
+      width: 45%;
+      height: 230%;
       transform: rotate(22deg);
       background: linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);
       animation: shine 3.8s ease-in-out infinite;
       opacity:.75;
     }
     @keyframes shine{
-      0%{ left:-60%; opacity:.0; }
+      0%{ left:-70%; opacity:.0; }
       25%{ opacity:.75; }
-      55%{ left:120%; opacity:.0; }
-      100%{ left:120%; opacity:0; }
+      55%{ left:130%; opacity:.0; }
+      100%{ left:130%; opacity:0; }
     }
-
-    .btn .emoji{
-      font-size: .9em;
-      filter: drop-shadow(0 8px 16px rgba(0,0,0,.25));
-    }
+    .btn .emoji{ font-size:.9em; filter: drop-shadow(0 8px 16px rgba(0,0,0,.25)); }
 
     .footer{
       margin-top: 18px;
@@ -302,7 +274,8 @@
 
     @media (max-width: 420px){
       .btn{ padding: 22px 16px; }
-      .badge{ padding: 11px 14px; }
+      .miniRow{ margin-top: 145px; }
+      .lantern{ width:78px; }
     }
   </style>
 </head>
@@ -311,9 +284,6 @@
 
   <div class="fx">
     <div class="stars"></div>
-    <div class="glow"></div>
-    <div class="moon"></div>
-
     <div class="incense">
       <div class="smoke"></div>
       <div class="smoke s2"></div>
@@ -324,36 +294,86 @@
   <div class="wrap">
     <div class="card">
 
-      <div class="ramadanTitle">رمضان مبارك</div>
+      <!-- زخرفة ذهبية علوية -->
+      <div class="orn" aria-hidden="true">
+        <svg viewBox="0 0 1000 240" preserveAspectRatio="none">
+          <!-- خطوط جانبية -->
+          <path d="M55 30 V210" stroke="rgba(255,211,123,.35)" stroke-width="2"/>
+          <path d="M945 30 V210" stroke="rgba(255,211,123,.35)" stroke-width="2"/>
+          <!-- زخرفة يمين -->
+          <path d="M940 70 C900 70 900 120 940 120 C980 120 980 170 940 170"
+                fill="none" stroke="rgba(255,211,123,.45)" stroke-width="2"/>
+          <!-- زخرفة يسار -->
+          <path d="M60 70 C100 70 100 120 60 120 C20 120 20 170 60 170"
+                fill="none" stroke="rgba(255,211,123,.45)" stroke-width="2"/>
 
-      <div class="ramadanBadge">
-        <div class="badge">
-          <span class="gold">🌙</span>
-          <span>اللهم بلغنا ليلة القدر</span>
-          <span class="gold">✨</span>
-        </div>
+          <!-- إطار علوي خفيف -->
+          <path d="M120 40 H880" stroke="rgba(255,211,123,.25)" stroke-width="2"/>
+          <path d="M190 210 H810" stroke="rgba(255,211,123,.22)" stroke-width="2"/>
+
+          <!-- شكل “ميدالية” وسط -->
+          <path d="M500 38
+                   C560 38 605 62 605 96
+                   C605 135 560 156 500 156
+                   C440 156 395 135 395 96
+                   C395 62 440 38 500 38 Z"
+                fill="rgba(255,211,123,.10)" stroke="rgba(255,211,123,.35)" stroke-width="2"/>
+          <circle cx="500" cy="97" r="8" fill="rgba(255,211,123,.55)"/>
+        </svg>
       </div>
 
-      <div class="timeRow">
+      <!-- فوانيس معلّقة -->
+      <div class="lanterns" aria-hidden="true">
+        <!-- فانوس 1 -->
+        <svg class="lantern" style="left:10%;" viewBox="0 0 120 240">
+          <path d="M60 0 V60" stroke="rgba(255,211,123,.55)" stroke-width="2"/>
+          <circle cx="60" cy="60" r="4" fill="rgba(255,211,123,.7)"/>
+          <path d="M45 70 h30 l10 15 v70 l-10 15 h-30 l-10-15 v-70z"
+                fill="rgba(255,211,123,.12)" stroke="rgba(255,211,123,.55)" stroke-width="2"/>
+          <path d="M45 85 h30" stroke="rgba(255,211,123,.35)" stroke-width="2"/>
+          <path d="M45 140 h30" stroke="rgba(255,211,123,.35)" stroke-width="2"/>
+          <circle cx="60" cy="120" r="18" fill="rgba(255,211,123,.10)"/>
+          <circle cx="60" cy="120" r="10" fill="rgba(255,211,123,.18)"/>
+          <path d="M55 190 h10 l-5 14z" fill="rgba(255,211,123,.55)"/>
+        </svg>
+
+        <!-- فانوس 2 -->
+        <svg class="lantern l2" style="left:45%;" viewBox="0 0 120 240">
+          <path d="M60 0 V55" stroke="rgba(255,211,123,.55)" stroke-width="2"/>
+          <circle cx="60" cy="55" r="4" fill="rgba(255,211,123,.7)"/>
+          <path d="M50 65 h20 l14 18 v62 l-14 18 h-20 l-14-18 v-62z"
+                fill="rgba(255,211,123,.12)" stroke="rgba(255,211,123,.55)" stroke-width="2"/>
+          <path d="M50 82 h20" stroke="rgba(255,211,123,.35)" stroke-width="2"/>
+          <path d="M50 130 h20" stroke="rgba(255,211,123,.35)" stroke-width="2"/>
+          <circle cx="60" cy="112" r="14" fill="rgba(255,211,123,.14)"/>
+          <path d="M55 186 h10 l-5 14z" fill="rgba(255,211,123,.55)"/>
+        </svg>
+
+        <!-- فانوس 3 -->
+        <svg class="lantern l3" style="left:78%;" viewBox="0 0 120 240">
+          <path d="M60 0 V52" stroke="rgba(255,211,123,.55)" stroke-width="2"/>
+          <circle cx="60" cy="52" r="4" fill="rgba(255,211,123,.7)"/>
+          <path d="M52 62 h16 l16 20 v56 l-16 20 h-16 l-16-20 v-56z"
+                fill="rgba(255,211,123,.10)" stroke="rgba(255,211,123,.55)" stroke-width="2"/>
+          <circle cx="60" cy="110" r="12" fill="rgba(255,211,123,.12)"/>
+          <path d="M55 182 h10 l-5 14z" fill="rgba(255,211,123,.55)"/>
+        </svg>
+      </div>
+
+      <!-- هلال -->
+      <div class="moon" aria-hidden="true"></div>
+
+      <!-- (تم حذف كل الكلام) وبقينا على التاريخ/الوقت بشكل بسيط -->
+      <div class="miniRow">
         <div class="chip" id="hijri">📅 —</div>
         <div class="chip" id="clock">⏰ —</div>
       </div>
 
+      <!-- الأزرار -->
       <div class="grid">
-        <a class="btn" href="quran.html">
-          <span class="emoji">📖</span>
-          برنامج ختم القرآن
-        </a>
-
-        <a class="btn" href="calendar.html">
-          <span class="emoji">🇸🇦</span>
-          تقويم السعودية
-        </a>
-
-        <a class="btn" href="library.html">
-          <span class="emoji">📚</span>
-          مكتبتي
-        </a>
+        <a class="btn" href="quran.html"><span class="emoji">📖</span> برنامج ختم القرآن</a>
+        <a class="btn" href="calendar.html"><span class="emoji">🇸🇦</span> تقويم السعودية</a>
+        <a class="btn" href="library.html"><span class="emoji">📚</span> مكتبتي</a>
       </div>
 
       <div class="footer">مع تحيات: المبرمج راعي المدبله 🔥💻</div>
@@ -381,7 +401,6 @@
 
     function update(){
       const now = new Date();
-
       const timeStr = new Intl.DateTimeFormat("ar-SA", {
         hour: "numeric",
         minute: "2-digit",
